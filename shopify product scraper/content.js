@@ -15,10 +15,34 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             currency = window.Shopify.currency.active;
         }
 
+        let themeName = "Unknown";
+        try {
+            const scripts = Array.from(document.querySelectorAll('script')).map(s => s.textContent || "");
+            for (let text of scripts) {
+                if (text.includes('Shopify.theme')) {
+                    const match = text.match(/Shopify\.theme\s*=\s*\{[^}]*"name"\s*:\s*"([^"]+)"/i);
+                    if (match && match[1]) {
+                        themeName = match[1];
+                        break;
+                    }
+                }
+            }
+            if (themeName === "Unknown") {
+                for (let text of scripts) {
+                    const match = text.match(/"theme_name"\s*:\s*"([^"]+)"/i) || text.match(/"themeName"\s*:\s*"([^"]+)"/i) || text.match(/Shopify\.theme\s*=\s*\{.*"name"\s*:\s*"([^"]+)"/is);
+                    if (match && match[1]) {
+                        themeName = match[1];
+                        break;
+                    }
+                }
+            }
+        } catch (e) {}
+
         sendResponse({
             isShopify: isShopify(),
             host: window.location.hostname,
-            currency: currency
+            currency: currency,
+            themeName: themeName
         });
     }
 

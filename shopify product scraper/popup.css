@@ -221,6 +221,16 @@ body {
     background: white;
 }
 
+.text-input {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    margin: 10px 0;
+    background: white;
+}
+
 .btn-block {
     width: 100%;
     padding: 10px;

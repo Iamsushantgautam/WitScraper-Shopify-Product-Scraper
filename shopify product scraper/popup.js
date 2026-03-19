@@ -69,6 +69,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         currentStoreHost = response.host;
         currentCurrency = response.currency || 'USD';
 
+        const storeTheme = document.getElementById('store-theme');
+        if (storeTheme) {
+            storeTheme.textContent = response.themeName || 'Unknown';
+        }
+
         // Show Connected View
         if (connectedView) connectedView.style.display = 'block';
         if (notShopifyView) notShopifyView.style.display = 'none';
@@ -263,6 +268,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             'Google Shopping / Custom label 2', 'Google Shopping / Custom label 3', 'Google Shopping / Custom label 4'
         ];
 
+        const defaultInventoryInput = document.getElementById('default-inventory');
+        const defaultInvValue = defaultInventoryInput ? parseInt(defaultInventoryInput.value, 10) : NaN;
+
         let rows = [];
         products.forEach(p => {
             const variants = p.variants || [];
@@ -301,7 +309,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                     rowData['Compare-at price'] = v.compare_at_price;
                     rowData['Charge tax'] = v.taxable ? 'TRUE' : 'FALSE';
                     rowData['Inventory tracker'] = v.inventory_management || 'shopify';
-                    rowData['Inventory quantity'] = v.inventory_quantity || 0;
+                    
+                    let invQty = v.inventory_quantity || 0;
+                    if ((invQty === 0 || invQty === null || typeof v.inventory_quantity === 'undefined') && !isNaN(defaultInvValue) && defaultInvValue >= 0) {
+                        invQty = defaultInvValue;
+                    }
+                    rowData['Inventory quantity'] = invQty;
                     rowData['Continue selling when out of stock'] = v.inventory_policy === 'continue' ? 'continue' : 'deny';
                     rowData['Weight value (grams)'] = v.grams;
                     rowData['Weight unit for display'] = 'g';
