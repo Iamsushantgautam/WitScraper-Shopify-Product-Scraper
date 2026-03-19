@@ -33,14 +33,26 @@
                 <span class="badge verified">Verified</span>
             </div>
 
-            <div class="info-row">
+            <!-- <div class="info-row">
                 <div class="info-icon-box">📍</div>
                 <div class="info-text">Store Location: <span id="store-location">Unknown</span></div>
-            </div>
+            </div> -->
 
             <div class="info-row">
                 <div class="info-icon-box">🎨</div>
                 <div class="info-text">Theme Name: <span id="store-theme">Unknown</span></div>
+            </div>
+
+            <!-- Detected Apps -->
+            <div class="info-row" id="apps-row"
+                style="display: none; flex-direction: column; align-items: flex-start; padding: 10px;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                    <div class="info-icon-box" style="font-size: 14px;">⚡</div>
+                    <div class="info-text" style="font-weight: 600;">Detected Apps:</div>
+                </div>
+                <div id="detected-apps" style="display: flex; flex-wrap: wrap; gap: 6px; padding-left: 2px;">
+                    <!-- Apps inject here -->
+                </div>
             </div>
 
             <div class="stats-grid">
@@ -126,6 +138,9 @@
         <br />
 
         <!-- Product List -->
+        <div class="search-container">
+            <input type="text" id="product-search" class="text-input" placeholder="🔍 Search products by title...">
+        </div>
         <div id="product-list" class="product-grid">
             <!-- Products injected here -->
             <div class="loading-state">

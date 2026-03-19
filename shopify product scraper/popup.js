@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // List
     const productList = document.getElementById('product-list');
+    const searchInput = document.getElementById('product-search');
 
     // State
     let allProducts = [];
@@ -72,6 +73,31 @@ document.addEventListener('DOMContentLoaded', async () => {
         const storeTheme = document.getElementById('store-theme');
         if (storeTheme) {
             storeTheme.textContent = response.themeName || 'Unknown';
+        }
+
+        // Render Detected Apps
+        const appsRow = document.getElementById('apps-row');
+        const appsContainer = document.getElementById('detected-apps');
+        if (appsRow && appsContainer) {
+            appsRow.style.display = 'flex';
+            appsContainer.innerHTML = '';
+            
+            if (response.detectedApps && response.detectedApps.length > 0) {
+                response.detectedApps.forEach(app => {
+                    const badge = document.createElement('span');
+                    badge.className = 'app-badge';
+                    badge.textContent = app;
+                    appsContainer.appendChild(badge);
+                });
+            } else {
+                const noBadge = document.createElement('span');
+                noBadge.className = 'app-badge';
+                noBadge.style.background = '#f3f4f6';
+                noBadge.style.color = '#6b7280';
+                noBadge.style.borderColor = '#d1d5db';
+                noBadge.textContent = 'None Detected';
+                appsContainer.appendChild(noBadge);
+            }
         }
 
         // Show Connected View
@@ -176,8 +202,35 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </div>
             `;
 
+            if (searchInput && searchInput.value) {
+                const query = searchInput.value.toLowerCase();
+                if (!p.title.toLowerCase().includes(query)) {
+                    card.style.display = 'none';
+                }
+            }
+
             productList.appendChild(card);
         });
+
+        // Search Filter Event
+        if (searchInput && !searchInput.dataset.listenerAttached) {
+            searchInput.dataset.listenerAttached = 'true';
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+                const cards = document.querySelectorAll('.product-card');
+                cards.forEach(card => {
+                    const titleEl = card.querySelector('.p-title');
+                    if (titleEl) {
+                        const title = titleEl.textContent.toLowerCase();
+                        if (title.includes(query)) {
+                            card.style.display = 'flex';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    }
+                });
+            });
+        }
 
         document.querySelectorAll('.select-checkbox').forEach(cb => {
             cb.addEventListener('change', (e) => {

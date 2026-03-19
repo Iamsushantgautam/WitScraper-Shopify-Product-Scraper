@@ -38,11 +38,42 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             }
         } catch (e) {}
 
+        // App Detection
+        let detectedApps = [];
+        const appSignatures = {
+            "Klaviyo": /klaviyo\.js|_learnq/i,
+            "Yotpo": /yotpo\.com|yotpoTrack/i,
+            "Judge.me": /judgeme|jdgm/i,
+            "Loox": /loox\.io|loox\.js/i,
+            "ReCharge": /rechargeapps|recharge/i,
+            "Mailchimp": /mailchimp|chimpstatic/i,
+            "Oberlo": /oberlo/i,
+            "AliReviews": /alireviews/i,
+            "Privy": /privy/i,
+            "Smile.io": /smile-v2\.js|smile\.io/i,
+            "Gorgias": /gorgias/i,
+            "Bold": /boldapps|bold-/i,
+            "Sezzle": /sezzle/i,
+            "Afterpay": /afterpay/i,
+            "Omnisend": /omnisend/i,
+            "Stamped.io": /stamped\.io/i
+        };
+
+        try {
+            const html = document.documentElement.innerHTML;
+            for (const [appName, regex] of Object.entries(appSignatures)) {
+                if (regex.test(html)) {
+                    detectedApps.push(appName);
+                }
+            }
+        } catch (e) {}
+
         sendResponse({
             isShopify: isShopify(),
             host: window.location.hostname,
             currency: currency,
-            themeName: themeName
+            themeName: themeName,
+            detectedApps: detectedApps
         });
     }
 
