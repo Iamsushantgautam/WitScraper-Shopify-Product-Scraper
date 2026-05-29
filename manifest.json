@@ -1,6 +1,6 @@
 {
     "manifest_version": 3,
-    "name": "Shopify Product Scraper to CSV",
+    "name": "WitScraper – Shopify Product Scraper",
     "version": "1.0",
     "description": "Scrape products from any Shopify store and export to CSV compatible with Shopify import.",
     "permissions": [

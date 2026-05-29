@@ -1,4 +1,4 @@
-# 🛍️ Shopify Product Scraper by Shopscan
+# 🛍️ WitScraper – Shopify Product Scraper
 
 A powerful and user-friendly Chrome extension designed to extract product data from any Shopify-powered online store. Export complete product catalogs, including variants and images, directly into a CSV file compatible with Shopify's import verification.
 
@@ -18,7 +18,7 @@ A powerful and user-friendly Chrome extension designed to extract product data f
 Since this extension is in development (or if you are loading it from source), follow these steps to install it on Google Chrome:
 
 1.  **Download/Clone the Source Code**:
-    *   Ensure you have the folder containing `manifest.json`, `popup.html`, `icon.png`, etc. (e.g., inside `shopify product scraper`).
+    *   Ensure you have the folder containing `manifest.json`, `popup.html`, `icon.png`, etc. (e.g., inside `WitScraper – Shopify Product Scraper`).
 
 2.  **Open Chrome Extensions Page**:
     *   Open Google Chrome.
@@ -34,7 +34,7 @@ Since this extension is in development (or if you are loading it from source), f
 
 5.  **Pin It**:
     *   Click the puzzle piece icon in your Chrome toolbar.
-    *   Find "Shopify Product Scraper" and click the pushpin icon to keep it visible.
+    *   Find "WitScraper – Shopify Product Scraper" and click the pushpin icon to keep it visible.
 
 ---
 
