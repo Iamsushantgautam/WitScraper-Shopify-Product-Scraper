@@ -13,12 +13,20 @@ A powerful and user-friendly Chrome extension designed to extract product data f
 
 ---
 
+## 📂 Folder Structure
+
+This repository is structured into two clean parts:
+*   **`extension/`**: Contains ONLY the Chrome extension files (manifest, popup, background scripting, optimized icons). This keeps the extension isolated and extremely lightweight.
+*   **Root Folder**: Contains the premium landing page (`index.html`, `style.css`, `script.js`) featuring an interactive Live Scraper Simulator, alongside the one-click packager utility (`build-zip.ps1`) and the generated ZIP bundle (`witscraper-extension.zip`).
+
+---
+
 ## 🚀 How to Install Locally
 
-Since this extension is in development (or if you are loading it from source), follow these steps to install it on Google Chrome:
+Since this extension is in development, follow these steps to load it into Google Chrome:
 
-1.  **Download/Clone the Source Code**:
-    *   Ensure you have the folder containing `manifest.json`, `popup.html`, `icon.png`, etc. (e.g., inside `WitScraper – Shopify Product Scraper`).
+1.  **Download the Code**:
+    *   Ensure you have the repository folder. The extension files reside inside the `extension/` subdirectory.
 
 2.  **Open Chrome Extensions Page**:
     *   Open Google Chrome.
@@ -30,11 +38,23 @@ Since this extension is in development (or if you are loading it from source), f
 
 4.  **Load the Extension**:
     *   Click the **"Load unpacked"** button that appears in the top left.
-    *   Navigate to and select the folder where the extension files are located (the folder containing `manifest.json`).
+    *   Navigate to the repository folder, and select the **`extension/`** subdirectory (the folder containing `manifest.json`).
 
 5.  **Pin It**:
     *   Click the puzzle piece icon in your Chrome toolbar.
     *   Find "WitScraper – Shopify Product Scraper" and click the pushpin icon to keep it visible.
+
+---
+
+## 📦 Bundling the Extension (ZIP Builder)
+
+To generate the download-ready `witscraper-extension.zip` file containing only the extension source files:
+1. Open PowerShell in the project root directory.
+2. Run the build script:
+   ```powershell
+   powershell -File .\scripts\build-zip.ps1
+   ```
+3. The script will automatically verify the extension assets, clean old files, and bundle them directly into the React app's public folder at `site/public/witscraper-extension.zip` for instant downloads! This keeps the project root clean and organized.
 
 ---
 
