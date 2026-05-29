@@ -1,0 +1,321 @@
+/* ==========================================================================
+   Simulator Component Styles
+   ========================================================================== */
+
+.demo-section {
+    padding: 55px 0;
+    position: relative;
+    z-index: 1;
+}
+
+.demo-display {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 28px;
+    padding: 0;
+}
+
+/* Mock Store UI */
+.mock-store {
+    background: #ffffff;
+    border: 1px solid rgba(15, 23, 42, 0.06);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.02);
+    display: flex;
+    flex-direction: column;
+}
+
+.store-topbar {
+    background: #f1f5f9;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+.store-circle {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+.store-circle.red { background: #ef4444; }
+.store-circle.yellow { background: #f59e0b; }
+.store-circle.green { background: #10b981; }
+
+.store-url {
+    background: rgba(15, 23, 42, 0.03);
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-size: 0.725rem;
+    color: var(--text-muted);
+    font-family: monospace;
+    flex-grow: 1;
+    text-align: center;
+    border: 1px solid rgba(15, 23, 42, 0.04);
+}
+
+.store-hero {
+    background: linear-gradient(135deg, #e0e7ff 0%, #fae8ff 100%);
+    padding: 12px 16px;
+    text-align: center;
+    border-bottom: 1px solid rgba(15, 23, 42, 0.04);
+}
+
+.store-hero h4 {
+    font-size: 1.05rem;
+    color: #1e1b4b;
+    margin-bottom: 2px;
+}
+
+.store-hero p {
+    font-size: 0.75rem;
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.mock-product-grid {
+    padding: 14px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    flex-grow: 1;
+}
+
+.mock-p-card {
+    background: #ffffff;
+    border: 1px solid rgba(15, 23, 42, 0.06);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: var(--transition-smooth);
+    text-align: left;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.01);
+}
+
+.mock-p-card.scanning {
+    border-color: var(--primary);
+    box-shadow: 0 0 15px rgba(99, 102, 241, 0.15);
+    transform: scale(1.02);
+}
+
+.mock-p-card.scraped {
+    border-color: var(--green);
+    background: rgba(5, 150, 105, 0.03);
+}
+
+.mock-p-image {
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+}
+
+.gradient-orange { background: linear-gradient(135deg, #ffedd5 0%, #fed7aa 100%); }
+.gradient-blue { background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); }
+.gradient-purple { background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%); }
+.gradient-red { background: linear-gradient(135deg, #ffe4e6 0%, #fecdd3 100%); }
+
+.mock-p-info {
+    padding: 8px 12px;
+}
+
+.mock-p-title {
+    font-size: 0.825rem;
+    font-weight: 600;
+    color: var(--text-main);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mock-p-price {
+    font-size: 0.775rem;
+    color: var(--text-muted);
+    margin-top: 3px;
+    font-weight: 600;
+}
+
+/* Scraper Extension Simulator Card */
+.simulator-extension {
+    background: #ffffff;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 16px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.03);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.sim-header {
+    background: var(--gradient-purple-pink);
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+}
+
+.sim-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: white;
+}
+
+.sim-badge {
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.725rem;
+    font-weight: 700;
+}
+
+.sim-body {
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex-grow: 1;
+    background: #ffffff;
+}
+
+.sim-main-panel {
+    background: rgba(15, 23, 42, 0.02);
+    border: 1px solid rgba(15, 23, 42, 0.04);
+    border-radius: 12px;
+    padding: 14px;
+    text-align: left;
+}
+
+.sim-stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 0.825rem;
+}
+
+.sim-stat-label {
+    color: var(--text-muted);
+}
+
+.sim-stat-value {
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.sim-stat-value.green-text {
+    color: var(--green);
+}
+
+.sim-progress-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(15, 23, 42, 0.05);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 10px 0 12px;
+}
+
+.sim-progress-fill {
+    height: 100%;
+    background: var(--gradient-purple-pink);
+    width: 0%;
+    transition: width 0.1s linear;
+}
+
+.sim-log {
+    background: #f8fafc;
+    border: 1px solid rgba(15, 23, 42, 0.04);
+    border-radius: 8px;
+    padding: 10px;
+    font-family: monospace;
+    font-size: 0.725rem;
+    height: 75px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.log-line {
+    color: var(--primary);
+    font-weight: 500;
+}
+
+.log-line.text-sub {
+    color: var(--text-muted);
+}
+
+.log-line.green-text {
+    color: var(--green);
+}
+
+.sim-footer {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin-top: 4px;
+}
+
+.sim-footer .btn-block-landing {
+    flex: 1;
+    font-size: 0.775rem;
+    padding: 11px 8px;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border-radius: var(--border-radius-md);
+}
+
+.btn-green {
+    background: var(--green);
+    color: white;
+    box-shadow: 0 4px 15px rgba(5, 150, 105, 0.15);
+}
+
+.btn-green:hover:not(:disabled) {
+    background: #047857;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(5, 150, 105, 0.25);
+}
+
+.btn-green:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* Responsive Overrides */
+@media (max-width: 992px) {
+    .demo-display {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+}
+
+@media (max-width: 600px) {
+    .sim-footer {
+        flex-direction: column;
+        gap: 8px;
+    }
+    .demo-display {
+        padding: 0;
+        gap: 20px;
+    }
+    .demo-section {
+        padding: 45px 0;
+    }
+    .mock-product-grid {
+        padding: 10px;
+        gap: 10px;
+    }
+    .mock-p-image {
+        height: 64px;
+        font-size: 1.5rem;
+    }
+}

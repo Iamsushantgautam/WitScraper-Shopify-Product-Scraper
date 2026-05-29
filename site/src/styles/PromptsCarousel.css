@@ -1,0 +1,174 @@
+/* ==========================================================================
+   PromptsCarousel — slide transitions + navigation bar only
+   (card visuals are in PromptCard.css)
+   ========================================================================== */
+
+.prompts-section {
+  padding: 60px 0;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Carousel outer wrapper ── */
+.pc-carousel-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ── Slide frame ── */
+.pc-slide-frame {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.pc-slide-frame.exit-next {
+  opacity: 0;
+  transform: translateX(-28px);
+}
+
+.pc-slide-frame.exit-prev {
+  opacity: 0;
+  transform: translateX(28px);
+}
+
+.pc-slide-frame.enter {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ── Navigation bar ── */
+.pc-nav-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  background: #fafbfc;
+  border: 1px solid rgba(15, 23, 42, 0.07);
+  border-top: none;
+  border-radius: 0 0 20px 20px;
+}
+
+/* Arrow buttons */
+.pc-arrow {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.pc-arrow:hover {
+  background: #95bf47;
+  border-color: #95bf47;
+  color: #fff;
+  transform: scale(1.08);
+  box-shadow: 0 4px 16px rgba(149, 191, 71, 0.3);
+}
+
+/* Dot tab buttons */
+.pc-dots {
+  display: flex;
+  gap: 10px;
+  flex: 1;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.pc-dot-btn {
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.07);
+  padding: 7px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.22s ease;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+}
+
+.pc-dot-num {
+  font-family: var(--font-heading, 'Inter', sans-serif);
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #94a3b8;
+  transition: color 0.22s ease;
+}
+
+.pc-dot-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #94a3b8;
+  transition: color 0.22s ease;
+}
+
+.pc-dot-btn:hover {
+  border-color: rgba(149, 191, 71, 0.3);
+  background: rgba(149, 191, 71, 0.04);
+}
+
+.pc-dot-btn.active {
+  border-color: rgba(149, 191, 71, 0.35);
+  background: rgba(149, 191, 71, 0.08);
+  box-shadow: 0 2px 12px rgba(149, 191, 71, 0.12);
+}
+
+.pc-dot-btn.active .pc-dot-num {
+  color: #5a9a1f;
+}
+
+.pc-dot-btn.active .pc-dot-label {
+  color: #0f172a;
+  font-weight: 700;
+}
+
+/* ── Footer row ── */
+.pc-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 28px;
+  padding: 0 4px;
+}
+
+.pc-footer-hint {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 540px) {
+  .pc-nav-bar {
+    padding: 12px 14px;
+    gap: 10px;
+  }
+
+  .pc-dot-label {
+    display: none;
+  }
+
+  .pc-footer {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+
+  .prompts-section {
+    padding: 40px 0;
+  }
+}

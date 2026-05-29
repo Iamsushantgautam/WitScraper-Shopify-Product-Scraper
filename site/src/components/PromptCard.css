@@ -1,0 +1,178 @@
+/* ── PromptCard ── */
+.pcard {
+  display: grid;
+  grid-template-columns: 42% 58%;
+  background: #fff;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1.5px solid #e8edf2;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+  min-height: 320px;
+  transition: box-shadow 0.3s, transform 0.3s;
+}
+
+.pcard:hover {
+  box-shadow: 0 16px 48px rgba(0,0,0,0.09);
+  transform: translateY(-3px);
+}
+
+/* Left: image */
+.pcard-img-col {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #0f2744, #1e3a60);
+}
+
+.pcard-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.pcard:hover .pcard-img {
+  transform: scale(1.05);
+}
+
+.pcard-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  opacity: 0.4;
+}
+
+.pcard-featured-badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(8px);
+  color: #c8f06a;
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 5px 12px;
+  border-radius: 50px;
+  border: 1px solid rgba(149,191,71,0.3);
+}
+
+/* Right: content */
+.pcard-body {
+  padding: 2rem 2rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pcard-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 50px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  align-self: flex-start;
+}
+
+.pcard-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.025em;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.pcard-desc {
+  font-size: 0.86rem;
+  color: #64748b;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Prompt preview */
+.pcard-prompt-box {
+  background: #0d1a2d;
+  border-radius: 10px;
+  padding: 12px 14px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.pcard-prompt-pre {
+  font-family: monospace;
+  font-size: 0.7rem;
+  color: #7dd3fc;
+  line-height: 1.6;
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Actions */
+.pcard-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.pcard-copy-btn {
+  flex: 1;
+  padding: 10px 18px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border-radius: 10px;
+  background: #0f172a;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  transition: background 0.2s, transform 0.15s;
+}
+
+.pcard-copy-btn:hover  { background: #95bf47; transform: translateY(-1px); }
+.pcard-copy-btn.copied { background: #10b981; }
+
+.pcard-browse-btn {
+  padding: 10px 16px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border-radius: 10px;
+  background: #f8fafc;
+  color: #0f172a;
+  border: 1.5px solid #e8edf2;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.pcard-browse-btn:hover {
+  background: #95bf47;
+  border-color: #95bf47;
+  color: #fff;
+}
+
+/* Responsive */
+@media (max-width: 820px) {
+  .pcard { grid-template-columns: 1fr; min-height: unset; }
+  .pcard-img-col { aspect-ratio: 16/7; }
+  .pcard-placeholder { min-height: 140px; }
+  .pcard-body { padding: 1.25rem; gap: 10px; }
+}
+
+@media (max-width: 480px) {
+  .pcard-actions { flex-direction: column; }
+}

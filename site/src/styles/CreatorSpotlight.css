@@ -1,0 +1,96 @@
+/* ==========================================================================
+   CreatorSpotlight Component Styles
+   ========================================================================== */
+
+.creator-section {
+    padding: 80px 0 100px;
+    position: relative;
+    z-index: 1;
+}
+
+.creator-card {
+    background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%); /* Ultra soft emerald/mint gradient */
+    border: 1px solid rgba(0, 143, 93, 0.12);
+    border-radius: 24px;
+    padding: 48px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.02), 0 0 40px rgba(0, 143, 93, 0.02);
+    text-align: left;
+}
+
+.creator-glow {
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 60%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(0, 143, 93, 0.08) 0%, transparent 65%);
+    z-index: 0;
+    pointer-events: none;
+}
+
+.creator-details {
+    position: relative;
+    z-index: 1;
+    max-width: 80%;
+}
+
+.creator-tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--primary);
+    margin-bottom: 12px;
+}
+
+.creator-card h2 {
+    font-size: 2.2rem;
+    margin-bottom: 20px;
+    color: var(--text-main);
+}
+
+.creator-bio {
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    line-height: 1.7;
+    margin-bottom: 32px;
+}
+
+.creator-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.btn-glow {
+    box-shadow: 0 8px 20px rgba(0, 143, 93, 0.2);
+}
+
+.btn-glow:hover {
+    box-shadow: 0 12px 28px rgba(0, 143, 93, 0.35);
+}
+
+.disclosure-badge {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--green);
+    background: rgba(5, 150, 105, 0.05);
+    border: 1px solid rgba(5, 150, 105, 0.15);
+    padding: 6px 16px;
+    border-radius: 20px;
+}
+
+/* Responsive Overrides */
+@media (max-width: 768px) {
+    .creator-details {
+        max-width: 100%;
+    }
+    
+    .creator-card {
+        padding: 32px;
+    }
+}

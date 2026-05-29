@@ -1,12 +1,12 @@
 :root {
-    --primary-grad: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+    --primary-grad: linear-gradient(135deg, #008f5d 0%, #10b981 100%);
     --bg-color: #f3f4f6;
     --card-bg: #ffffff;
     --text-main: #1f2937;
     --text-sub: #6b7280;
-    --purple: #7c3aed;
+    --purple: #008f5d;
     --green: #10b981;
-    --pink: #ec4899;
+    --pink: #10b981;
     --blue: #3b82f6;
     --orange: #f97316;
 }
@@ -143,8 +143,8 @@ body {
 }
 
 .stat-icon.purple {
-    background: #ede9fe;
-    color: #7c3aed;
+    background: rgba(0, 143, 93, 0.08);
+    color: #008f5d;
 }
 
 .stat-icon.light-blue {
@@ -188,21 +188,21 @@ body {
 }
 
 .btn-purple {
-    background: #4f46e5;
+    background: #008f5d;
     color: white;
 }
 
 .btn-purple:hover {
-    background: #4338ca;
+    background: #00734b;
 }
 
 .btn-pink {
-    background: #ec4899;
+    background: #10b981;
     color: white;
 }
 
 .btn-pink:hover {
-    background: #db2777;
+    background: #059669;
 }
 
 .btn-badge {
