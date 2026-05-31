@@ -80,7 +80,11 @@ const ShopifyAiPrompt = () => {
       }
       return;
     }
-    fetch(`https://witvault-backend.onrender.com/api/apikeys/public/${apiKey}`)
+    const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const baseUrl = isLocal ? 'https://witvault-backend.onrender.com' : '';
+    const requestUrl = `${baseUrl}/api/apikeys/public/${apiKey}`;
+
+    fetch(requestUrl)
       .then(res => {
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
