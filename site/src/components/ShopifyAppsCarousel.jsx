@@ -27,73 +27,106 @@ function ShopifyAppsCarousel() {
   }, []);
 
   // Fetch Live Apps from API
+  const mapAppsData = (rawApps) => {
+    return rawApps.map(p => {
+      const getCategoryColor = (cat) => {
+        switch (cat) {
+          case 'Page Builders':
+          case 'Data & Operations':
+            return 'icon-blue';
+          case 'Marketing':
+          case 'Subscriptions & Upsell':
+            return 'icon-orange';
+          case 'Social Proof':
+            return 'icon-purple';
+          case 'SEO & Speed':
+          case 'Customer Support':
+          case 'Inventory & Wholesale':
+            return 'icon-green';
+          case 'Shipping & Delivery':
+            return 'icon-red';
+          default:
+            return 'icon-blue';
+        }
+      };
+
+      const getBenefitText = () => {
+        if (p.tags && p.tags.length > 0) {
+          const tag = p.tags[0];
+          return tag.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        }
+        return 'Premium Feature';
+      };
+
+      const getPriceText = () => {
+        if (p.pricingTags && p.pricingTags.length > 0) {
+          return p.pricingTags[0];
+        }
+        return 'Free plan available';
+      };
+
+      return {
+        id: p._id || p.id,
+        name: p.title || '',
+        category: p.category || '',
+        rating: String(p.rating || '0.0'),
+        reviews: p.reviewsCount || '0',
+        price: getPriceText(),
+        desc: p.description || p.desc || '',
+        link: p.url || '',
+        benefit: getBenefitText(),
+        whyBest: p.whyItsBest || '',
+        color: getCategoryColor(p.category)
+      };
+    });
+  };
+
+  // Fetch Live Apps from API
   useEffect(() => {
     const apiKey = import.meta.env.VITE_PUBLIC_API_KEY;
+
+    const handleLoadFromCache = () => {
+      const cached = localStorage.getItem('witscraper_cached_apps');
+      if (cached) {
+        try {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setApps(mapAppsData(parsed));
+            setLoading(false);
+            return true;
+          }
+        } catch (e) {
+          console.error('Error parsing cached apps in carousel:', e);
+        }
+      }
+      return false;
+    };
+
     if (!apiKey) {
+      console.warn('VITE_PUBLIC_API_KEY is not defined in the environment. Trying local storage cache.');
+      handleLoadFromCache();
       setLoading(false);
       return;
     }
     fetch(`https://witvault-backend.onrender.com/api/apikeys/public/${apiKey}`)
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        return res.json();
+      })
       .then(data => {
         if (data && Array.isArray(data.shopifyApps)) {
-          const mapped = data.shopifyApps.map(p => {
-            const getCategoryColor = (cat) => {
-              switch (cat) {
-                case 'Page Builders':
-                case 'Data & Operations':
-                  return 'icon-blue';
-                case 'Marketing':
-                case 'Subscriptions & Upsell':
-                  return 'icon-orange';
-                case 'Social Proof':
-                  return 'icon-purple';
-                case 'SEO & Speed':
-                case 'Customer Support':
-                case 'Inventory & Wholesale':
-                  return 'icon-green';
-                case 'Shipping & Delivery':
-                  return 'icon-red';
-                default:
-                  return 'icon-blue';
-              }
-            };
-
-            const getBenefitText = () => {
-              if (p.tags && p.tags.length > 0) {
-                const tag = p.tags[0];
-                return tag.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-              }
-              return 'Premium Feature';
-            };
-
-            const getPriceText = () => {
-              if (p.pricingTags && p.pricingTags.length > 0) {
-                return p.pricingTags[0];
-              }
-              return 'Free plan available';
-            };
-
-            return {
-              id: p._id || p.id,
-              name: p.title,
-              category: p.category,
-              rating: String(p.rating || '0.0'),
-              reviews: p.reviewsCount || '0',
-              price: getPriceText(),
-              desc: p.description || p.desc || '',
-              link: p.url,
-              benefit: getBenefitText(),
-              whyBest: p.whyItsBest || '',
-              color: getCategoryColor(p.category)
-            };
-          });
-          setApps(mapped);
+          setApps(mapAppsData(data.shopifyApps));
+          try {
+            localStorage.setItem('witscraper_cached_apps', JSON.stringify(data.shopifyApps));
+          } catch (e) {
+            console.error('Error saving apps to cache in carousel:', e);
+          }
         }
         setLoading(false);
       })
       .catch(err => {
-        console.error('Error fetching apps for carousel:', err);
+        console.error('Error fetching apps for carousel, trying to serve from local storage cache:', err);
+        handleLoadFromCache();
         setLoading(false);
       });
   }, []);
@@ -220,7 +253,7 @@ function ShopifyAppsCarousel() {
             onMouseLeave={() => setIsPaused(false)}
           >
             {/* Carousel track */}
-            <div 
+            <div
               className="sac-carousel-track"
               style={{
                 transform: `translateX(-${activeIndex * (100 / cardsPerView)}%)`,

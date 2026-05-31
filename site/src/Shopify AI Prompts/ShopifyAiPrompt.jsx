@@ -22,13 +22,62 @@ const ShopifyAiPrompt = () => {
   const [search, setSearch] = useState('');
   const [activeTag, setActiveTag] = useState('All');
 
+  const mapPromptsData = (rawPrompts) => {
+    return rawPrompts.map(p => {
+      const apiTags = (p.tags || []).map(t => t.toLowerCase());
+      let tag = 'Content';
+      if (apiTags.includes('homepage')) {
+        tag = 'Homepage';
+      } else if (apiTags.includes('hero')) {
+        tag = 'Hero';
+      } else if (apiTags.includes('marketing') || apiTags.includes('sale') || apiTags.includes('subscription')) {
+        tag = 'Marketing';
+      } else if (apiTags.includes('product') || apiTags.includes('products')) {
+        tag = 'Product';
+      } else if (apiTags.includes('social proof') || apiTags.includes('testimonials') || apiTags.includes('reviews') || apiTags.includes('stars')) {
+        tag = 'Social Proof';
+      }
+      return {
+        id: p._id || p.id,
+        title: p.title || '',
+        tag: tag,
+        category: p.category || '',
+        tags: p.tags || [],
+        desc: p.description || p.desc || p.summary || '',
+        prompt: p.prompt || '',
+        img: p.image || null
+      };
+    });
+  };
+
   const fetchPrompts = () => {
     setLoading(true);
     setError(null);
     const apiKey = import.meta.env.VITE_PUBLIC_API_KEY;
+
+    const handleLoadFromCache = (fallbackErrorMsg) => {
+      const cached = localStorage.getItem('witscraper_cached_prompts');
+      if (cached) {
+        try {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setPromptsList(mapPromptsData(parsed));
+            setLoading(false);
+            return true;
+          }
+        } catch (e) {
+          console.error('Error parsing cached prompts:', e);
+        }
+      }
+      return false;
+    };
+
     if (!apiKey) {
-      setError('API key configuration is missing');
-      setLoading(false);
+      const loaded = handleLoadFromCache('API key configuration is missing');
+      if (!loaded) {
+        setError('API key configuration is missing');
+        setLoading(false);
+      }
       return;
     }
     fetch(`https://witvault-backend.onrender.com/api/apikeys/public/${apiKey}`)
@@ -40,39 +89,25 @@ const ShopifyAiPrompt = () => {
       })
       .then(data => {
         if (data && Array.isArray(data.prompts)) {
-          const mapped = data.prompts.map(p => {
-            const apiTags = (p.tags || []).map(t => t.toLowerCase());
-            let tag = 'Content';
-            if (apiTags.includes('homepage')) {
-              tag = 'Homepage';
-            } else if (apiTags.includes('hero')) {
-              tag = 'Hero';
-            } else if (apiTags.includes('marketing') || apiTags.includes('sale') || apiTags.includes('subscription')) {
-              tag = 'Marketing';
-            } else if (apiTags.includes('product') || apiTags.includes('products')) {
-              tag = 'Product';
-            } else if (apiTags.includes('social proof') || apiTags.includes('testimonials') || apiTags.includes('reviews') || apiTags.includes('stars')) {
-              tag = 'Social Proof';
-            }
-            return {
-              id: p._id || p.id,
-              title: p.title,
-              tag: tag,
-              desc: p.description || p.desc || p.summary,
-              prompt: p.prompt,
-              img: p.image || null
-            };
-          });
+          const mapped = mapPromptsData(data.prompts);
           setPromptsList(mapped);
+          try {
+            localStorage.setItem('witscraper_cached_prompts', JSON.stringify(data.prompts));
+          } catch (e) {
+            console.error('Error saving prompts to cache:', e);
+          }
         } else {
           throw new Error('Invalid data structure received');
         }
         setLoading(false);
       })
       .catch(err => {
-        console.error('Error loading prompts:', err);
-        setError(err.message || 'Unknown error');
-        setLoading(false);
+        console.error('Error loading prompts from API, trying to serve from local storage cache:', err);
+        const loaded = handleLoadFromCache(err.message || 'Unknown error');
+        if (!loaded) {
+          setError(err.message || 'Unknown error');
+          setLoading(false);
+        }
       });
   };
 
@@ -85,7 +120,10 @@ const ShopifyAiPrompt = () => {
   const filtered = promptsList.filter(p => {
     const matchTag = activeTag === 'All' || p.tag === activeTag;
     const q = search.toLowerCase();
-    const matchSearch = !q || p.title.toLowerCase().includes(q) || p.prompt.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q);
+    const titleText = (p.title || '').toLowerCase();
+    const promptText = (p.prompt || '').toLowerCase();
+    const descText = (p.desc || '').toLowerCase();
+    const matchSearch = !q || titleText.includes(q) || promptText.includes(q) || descText.includes(q);
     return matchTag && matchSearch;
   });
 

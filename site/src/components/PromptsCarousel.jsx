@@ -8,62 +8,95 @@ function PromptsCarousel() {
   const [prompts, setPrompts] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const mapPromptsData = (rawPrompts) => {
+    return rawPrompts.map(p => {
+      const apiTags = (p.tags || []).map(t => t.toLowerCase());
+      let tag = 'Content';
+      if (apiTags.includes('homepage')) {
+        tag = 'Homepage';
+      } else if (apiTags.includes('hero')) {
+        tag = 'Hero';
+      } else if (apiTags.includes('marketing') || apiTags.includes('sale') || apiTags.includes('subscription')) {
+        tag = 'Marketing';
+      } else if (apiTags.includes('product') || apiTags.includes('products')) {
+        tag = 'Product';
+      } else if (apiTags.includes('social proof') || apiTags.includes('testimonials') || apiTags.includes('reviews') || apiTags.includes('stars')) {
+        tag = 'Social Proof';
+      }
+      return {
+        id: p._id || p.id,
+        title: p.title || '',
+        tag: tag,
+        category: p.category || '',
+        tags: p.tags || [],
+        desc: p.description || p.desc || p.summary || '',
+        prompt: p.prompt || '',
+        img: p.image || null
+      };
+    });
+  };
+
   useEffect(() => {
     const apiKey = import.meta.env.VITE_PUBLIC_API_KEY;
+
+    const handleLoadFromCache = () => {
+      const cached = localStorage.getItem('witscraper_cached_prompts');
+      if (cached) {
+        try {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setPrompts(mapPromptsData(parsed));
+            setLoading(false);
+            return true;
+          }
+        } catch (e) {
+          console.error('Error parsing cached prompts in carousel:', e);
+        }
+      }
+      return false;
+    };
+
     if (!apiKey) {
-      console.warn('VITE_PUBLIC_API_KEY is not defined in the environment.');
+      console.warn('VITE_PUBLIC_API_KEY is not defined in the environment. Trying local storage cache.');
+      handleLoadFromCache();
       setLoading(false);
       return;
     }
     fetch(`https://witvault-backend.onrender.com/api/apikeys/public/${apiKey}`)
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        return res.json();
+      })
       .then(data => {
         if (data && Array.isArray(data.prompts)) {
-          const mapped = data.prompts.map(p => {
-            const apiTags = (p.tags || []).map(t => t.toLowerCase());
-            let tag = 'Content';
-            if (apiTags.includes('homepage')) {
-              tag = 'Homepage';
-            } else if (apiTags.includes('hero')) {
-              tag = 'Hero';
-            } else if (apiTags.includes('marketing') || apiTags.includes('sale') || apiTags.includes('subscription')) {
-              tag = 'Marketing';
-            } else if (apiTags.includes('product') || apiTags.includes('products')) {
-              tag = 'Product';
-            } else if (apiTags.includes('social proof') || apiTags.includes('testimonials') || apiTags.includes('reviews') || apiTags.includes('stars')) {
-              tag = 'Social Proof';
-            }
-            return {
-              id: p._id || p.id,
-              title: p.title,
-              tag: tag,
-              desc: p.description || p.desc || p.summary,
-              prompt: p.prompt,
-              img: p.image || null
-            };
-          });
-          setPrompts(mapped);
+          setPrompts(mapPromptsData(data.prompts));
+          try {
+            localStorage.setItem('witscraper_cached_prompts', JSON.stringify(data.prompts));
+          } catch (e) {
+            console.error('Error saving prompts to cache in carousel:', e);
+          }
         }
         setLoading(false);
       })
       .catch(err => {
-        console.error('Error fetching prompts for carousel:', err);
+        console.error('Error fetching prompts for carousel, trying to serve from local storage cache:', err);
+        handleLoadFromCache();
         setLoading(false);
       });
   }, []);
 
   // Prompts with images first, then fill to 4 total
-  const withImg    = prompts.filter(p => p.img);
+  const withImg = prompts.filter(p => p.img);
   const withoutImg = prompts.filter(p => !p.img);
   const carouselPrompts = [...withImg, ...withoutImg].slice(0, 4);
 
   const [activeIndex, setActiveIndex] = useState(0);
-  const [copiedId,    setCopiedId]    = useState(null);
-  const [showToast,   setShowToast]   = useState(false);
-  const [toastMessage,setToastMessage]= useState('');
-  const [isPaused,    setIsPaused]    = useState(false);
-  const [animating,   setAnimating]   = useState(false);
-  const [direction,   setDirection]   = useState('next');
+  const [copiedId, setCopiedId] = useState(null);
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [isPaused, setIsPaused] = useState(false);
+  const [animating, setAnimating] = useState(false);
+  const [direction, setDirection] = useState('next');
 
   // Auto-rotate
   useEffect(() => {
@@ -78,8 +111,8 @@ function PromptsCarousel() {
       targetIndex !== null
         ? targetIndex
         : dir === 'next'
-        ? (activeIndex + 1) % carouselPrompts.length
-        : (activeIndex - 1 + carouselPrompts.length) % carouselPrompts.length;
+          ? (activeIndex + 1) % carouselPrompts.length
+          : (activeIndex - 1 + carouselPrompts.length) % carouselPrompts.length;
 
     setDirection(targetIndex !== null
       ? targetIndex > activeIndex ? 'next' : 'prev'

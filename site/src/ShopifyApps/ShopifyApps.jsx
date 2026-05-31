@@ -27,7 +27,7 @@ const SappsDropdown = ({ label, value, options, onChange }) => {
                     {options.map(opt => {
                         const isSelected = opt.value === value;
                         return (
-                            <li 
+                            <li
                                 key={opt.value}
                                 className={`sapps-dropdown-item ${isSelected ? 'selected' : ''}`}
                                 onClick={() => {
@@ -70,7 +70,7 @@ const ShopifyApps = () => {
     const [search, setSearch] = useState('');
     const [activeCategory, setActiveCategory] = useState('All');
     const [toast, setToast] = useState({ show: false, message: '' });
-    
+
     // Advanced Filters State
     const [showFilters, setShowFilters] = useState(false);
     const [priceFilter, setPriceFilter] = useState('All');
@@ -97,13 +97,88 @@ const ShopifyApps = () => {
         { value: 'Rating', label: 'Highest Rating' }
     ];
 
+    const mapAppsData = (rawApps) => {
+        return rawApps.map(p => {
+            const getCategoryColor = (cat) => {
+                switch (cat) {
+                    case 'Page Builders':
+                    case 'Data & Operations':
+                        return 'icon-blue';
+                    case 'Marketing':
+                    case 'Subscriptions & Upsell':
+                        return 'icon-orange';
+                    case 'Social Proof':
+                        return 'icon-purple';
+                    case 'SEO & Speed':
+                    case 'Customer Support':
+                    case 'Inventory & Wholesale':
+                        return 'icon-green';
+                    case 'Shipping & Delivery':
+                        return 'icon-red';
+                    default:
+                        return 'icon-blue';
+                }
+            };
+
+            const getBenefitText = () => {
+                if (p.tags && p.tags.length > 0) {
+                    const tag = p.tags[0];
+                    return tag.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+                }
+                return 'Premium Feature';
+            };
+
+            const getPriceText = () => {
+                if (p.pricingTags && p.pricingTags.length > 0) {
+                    return p.pricingTags[0];
+                }
+                return 'Free plan available';
+            };
+
+            return {
+                id: p._id || p.id,
+                name: p.title || '',
+                category: p.category || '',
+                rating: String(p.rating || '0.0'),
+                reviews: p.reviewsCount || '0',
+                price: getPriceText(),
+                desc: p.description || p.desc || '',
+                link: p.url || '',
+                benefit: getBenefitText(),
+                whyBest: p.whyItsBest || '',
+                color: getCategoryColor(p.category)
+            };
+        });
+    };
+
     const fetchApps = () => {
         setLoading(true);
         setError(null);
         const apiKey = import.meta.env.VITE_PUBLIC_API_KEY;
+
+        const handleLoadFromCache = (fallbackErrorMsg) => {
+            const cached = localStorage.getItem('witscraper_cached_apps');
+            if (cached) {
+                try {
+                    const parsed = JSON.parse(cached);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        setAppsList(mapAppsData(parsed));
+                        setLoading(false);
+                        return true;
+                    }
+                } catch (e) {
+                    console.error('Error parsing cached apps:', e);
+                }
+            }
+            return false;
+        };
+
         if (!apiKey) {
-            setError('API key configuration is missing');
-            setLoading(false);
+            const loaded = handleLoadFromCache('API key configuration is missing');
+            if (!loaded) {
+                setError('API key configuration is missing');
+                setLoading(false);
+            }
             return;
         }
         fetch(`https://witvault-backend.onrender.com/api/apikeys/public/${apiKey}`)
@@ -113,67 +188,25 @@ const ShopifyApps = () => {
             })
             .then(data => {
                 if (data && Array.isArray(data.shopifyApps)) {
-                    const mapped = data.shopifyApps.map(p => {
-                        const getCategoryColor = (cat) => {
-                            switch (cat) {
-                                case 'Page Builders':
-                                case 'Data & Operations':
-                                    return 'icon-blue';
-                                case 'Marketing':
-                                case 'Subscriptions & Upsell':
-                                    return 'icon-orange';
-                                case 'Social Proof':
-                                    return 'icon-purple';
-                                case 'SEO & Speed':
-                                case 'Customer Support':
-                                case 'Inventory & Wholesale':
-                                    return 'icon-green';
-                                case 'Shipping & Delivery':
-                                    return 'icon-red';
-                                default:
-                                    return 'icon-blue';
-                            }
-                        };
-
-                        const getBenefitText = () => {
-                            if (p.tags && p.tags.length > 0) {
-                                const tag = p.tags[0];
-                                return tag.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-                            }
-                            return 'Premium Feature';
-                        };
-
-                        const getPriceText = () => {
-                            if (p.pricingTags && p.pricingTags.length > 0) {
-                                return p.pricingTags[0];
-                            }
-                            return 'Free plan available';
-                        };
-
-                        return {
-                            id: p._id || p.id,
-                            name: p.title,
-                            category: p.category,
-                            rating: String(p.rating || '0.0'),
-                            reviews: p.reviewsCount || '0',
-                            price: getPriceText(),
-                            desc: p.description || p.desc || '',
-                            link: p.url,
-                            benefit: getBenefitText(),
-                            whyBest: p.whyItsBest || '',
-                            color: getCategoryColor(p.category)
-                        };
-                    });
+                    const mapped = mapAppsData(data.shopifyApps);
                     setAppsList(mapped);
+                    try {
+                        localStorage.setItem('witscraper_cached_apps', JSON.stringify(data.shopifyApps));
+                    } catch (e) {
+                        console.error('Error saving apps to cache:', e);
+                    }
                 } else {
                     throw new Error('Invalid data structure received');
                 }
                 setLoading(false);
             })
             .catch(err => {
-                console.error('Error fetching apps:', err);
-                setError(err.message || 'Unknown error');
-                setLoading(false);
+                console.error('Error fetching apps from API, trying to serve from local storage cache:', err);
+                const loaded = handleLoadFromCache(err.message || 'Unknown error');
+                if (!loaded) {
+                    setError(err.message || 'Unknown error');
+                    setLoading(false);
+                }
             });
     };
 
@@ -187,13 +220,16 @@ const ShopifyApps = () => {
     const filteredApps = appsList
         .filter(app => {
             const matchCategory = activeCategory === 'All' || app.category === activeCategory;
-            
+
             const q = search.toLowerCase();
-            const matchSearch = !q || 
-                app.name.toLowerCase().includes(q) || 
-                app.desc.toLowerCase().includes(q) || 
-                app.benefit.toLowerCase().includes(q);
-            
+            const nameText = (app.name || '').toLowerCase();
+            const descText = (app.desc || '').toLowerCase();
+            const benefitText = (app.benefit || '').toLowerCase();
+            const matchSearch = !q ||
+                nameText.includes(q) ||
+                descText.includes(q) ||
+                benefitText.includes(q);
+
             // Price Filter Matching
             let matchPrice = true;
             if (priceFilter === 'Free') {
@@ -269,7 +305,7 @@ const ShopifyApps = () => {
                                 Handpicked, high-conversion apps designed to supercharge your design, automation, speed, and revenues.
                             </p>
                         </div>
-                        
+
                         <div className="sapps-search-row">
                             <div className="sapps-search-wrap">
                                 <svg className="sapps-search-ico" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" /></svg>
@@ -286,7 +322,7 @@ const ShopifyApps = () => {
                                     </button>
                                 )}
                             </div>
-                            <button 
+                            <button
                                 className={`sapps-filter-toggle ${showFilters ? 'active' : ''}`}
                                 onClick={() => setShowFilters(!showFilters)}
                                 title="Toggle advanced filters"
@@ -303,19 +339,19 @@ const ShopifyApps = () => {
                     {/* ── Advanced Filters Drawer ── */}
                     {showFilters && (
                         <div className="sapps-filters-drawer">
-                            <SappsDropdown 
+                            <SappsDropdown
                                 label="Pricing Structure"
                                 value={priceFilter}
                                 options={priceOptions}
                                 onChange={setPriceFilter}
                             />
-                            <SappsDropdown 
+                            <SappsDropdown
                                 label="Rating Requirement"
                                 value={ratingFilter}
                                 options={ratingOptions}
                                 onChange={setRatingFilter}
                             />
-                            <SappsDropdown 
+                            <SappsDropdown
                                 label="Sort Directory"
                                 value={sortBy}
                                 options={sortOptions}
@@ -407,9 +443,9 @@ const ShopifyApps = () => {
                                 <span className="sapps-empty-icon">🔍</span>
                                 <h3>No Apps Match Your Query</h3>
                                 <p>Try searching for a different category or clearing your current text search filter.</p>
-                                <button className="btn-primary" onClick={() => { 
-                                    setSearch(''); 
-                                    setActiveCategory('All'); 
+                                <button className="btn-primary" onClick={() => {
+                                    setSearch('');
+                                    setActiveCategory('All');
                                     setPriceFilter('All');
                                     setRatingFilter('All');
                                     setSortBy('Reviews');

@@ -405,7 +405,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // 6. Visit Web App Listeners
     const handleVisitWebapp = () => {
-        chrome.tabs.create({ url: 'http://localhost:5173' });
+        chrome.tabs.create({ url: 'https://witscraper.vercel.app' });
     };
 
     const btnVisitWebapp = document.getElementById('btn-visit-webapp');
