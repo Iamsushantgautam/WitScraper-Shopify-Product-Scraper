@@ -13,6 +13,7 @@ import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
 import Content from './pages/Content';
 import Feedback from './pages/Feedback';
+import Docs from './pages/Docs';
 
 function App() {
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
@@ -35,6 +36,7 @@ function App() {
   const isTermsPage = currentPath.startsWith('/terms');
   const isContentPage = currentPath.startsWith('/content');
   const isFeedbackPage = currentPath.startsWith('/feedback');
+  const isDocsPage = currentPath.startsWith('/docs');
 
   return (
     <>
@@ -84,6 +86,10 @@ function App() {
       ) : isFeedbackPage ? (
         <main style={{ paddingTop: '120px', paddingBottom: '60px' }}>
           <Feedback />
+        </main>
+      ) : isDocsPage ? (
+        <main style={{ paddingTop: '120px', paddingBottom: '60px' }}>
+          <Docs />
         </main>
       ) : (
         <Home />

@@ -26,6 +26,7 @@ function Navbar() {
           <a href="/csv-maker">CSV Master Tool</a>
           <a href="/shopifyaiprompts">Shopify AI Prompts</a>
           <a href="/shopify-apps">Shopify Apps</a>
+          <a href="/docs">Docs</a>
           <a href="/founder">Meet Founder</a>
         </nav>
 
@@ -64,6 +65,9 @@ function Navbar() {
           </a>
           <a href="/shopify-apps" onClick={closeMobileMenu}>
             <i className="fas fa-store"></i> Shopify Apps
+          </a>
+          <a href="/docs" onClick={closeMobileMenu}>
+            <i className="fas fa-book"></i> Features & Docs
           </a>
           <a href="/founder" onClick={closeMobileMenu}>
             <i className="fas fa-user-circle"></i> Meet Founder

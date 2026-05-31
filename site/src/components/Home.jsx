@@ -13,8 +13,8 @@ function Home() {
       <Hero />
       <Features />
       <Simulator />
-      {/* <PromptsCarousel />
-      <ShopifyAppsCarousel /> */}
+      <PromptsCarousel />
+      <ShopifyAppsCarousel />
       <InstallGuide />
       <CreatorSpotlight />
     </main>

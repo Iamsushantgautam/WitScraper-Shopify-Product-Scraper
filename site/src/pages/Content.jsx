@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Toast from '../components/Toast';
 import './Pages.css';
 
 function Content() {
@@ -10,9 +9,8 @@ function Content() {
     message: ''
   });
   
-  // Toast notifications state
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
+  const [status, setStatus] = useState({ type: '', message: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,22 +22,55 @@ function Content() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    // Simulate successful form submission
-    setToastMessage(`Thanks ${formData.name}! Your message has been sent successfully.`);
-    setShowToast(true);
-    
-    // Reset form
-    setFormData({
-      name: '',
-      email: '',
-      subject: 'General Inquiry',
-      message: ''
-    });
+    setIsSubmitting(true);
+    setStatus({ type: '', message: '' });
 
-    setTimeout(() => {
-      setShowToast(false);
-    }, 3000);
+    fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify({
+        access_key: 'b3b48ffe-9e5e-41c5-b7f6-b4e505acff7e',
+        formType: 'Contact Form',
+        name: formData.name,
+        email: formData.email || 'iamsushantgatam@gmail.com',
+        _email: formData.email || 'iamsushantgatam@gmail.com',
+        _replyto: formData.email || 'iamsushantgatam@gmail.com',
+        subject: formData.subject,
+        message: formData.message
+      }),
+    })
+      .then(async (res) => {
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || !json.success) {
+          const errMsg = json.message || `Submission failed with status ${res.status}`;
+          throw new Error(errMsg);
+        }
+        const msg = `Thanks ${formData.name}! Your message has been sent successfully.`;
+        setStatus({ type: 'success', message: msg });
+        // Reset form
+        setFormData({
+          name: '',
+          email: '',
+          subject: 'General Inquiry',
+          message: ''
+        });
+      })
+      .catch(err => {
+        console.error('Error submitting contact form:', err);
+        const errMsg = err.message === 'Failed to fetch'
+          ? "Network error. Please check your internet or domain restriction settings."
+          : `Submission failed: ${err.message}`;
+        setStatus({ type: 'error', message: errMsg });
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+        setTimeout(() => {
+          setStatus({ type: '', message: '' });
+        }, 6000);
+      });
   };
 
   return (
@@ -113,17 +144,34 @@ function Content() {
             />
           </div>
 
-          <button type="submit" className="btn-submit">
-            <i className="fas fa-paper-plane"></i> Send Message
-          </button>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'flex-start' }}>
+            <button type="submit" className="btn-submit" disabled={isSubmitting} style={{ marginTop: 0 }}>
+              {isSubmitting ? (
+                <>
+                  <i className="fas fa-spinner fa-spin" style={{ marginRight: '8px' }}></i> Sending...
+                </>
+              ) : (
+                <>
+                  <i className="fas fa-paper-plane"></i> Send Message
+                </>
+              )}
+            </button>
+
+            {status.message && (
+              <div className={`form-status-msg ${status.type}`}>
+                {status.type === 'success' ? (
+                  <i className="fas fa-check-circle"></i>
+                ) : (
+                  <i className="fas fa-exclamation-circle"></i>
+                )}
+                <span>{status.message}</span>
+              </div>
+            )}
+          </div>
 
         </form>
 
       </div>
-
-      {/* Global Toast component */}
-      <Toast showToast={showToast} toastMessage={toastMessage} />
-
     </div>
   );
 }

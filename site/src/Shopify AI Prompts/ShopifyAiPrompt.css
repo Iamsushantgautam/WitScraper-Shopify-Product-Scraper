@@ -642,3 +642,29 @@
         padding: 2rem 4% 4rem;
     }
 }
+
+/* Loading & Error States */
+.sdv-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    gap: 1.25rem;
+    color: #475569;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.sdv-spinner {
+    width: 44px;
+    height: 44px;
+    border: 4px solid rgba(79, 70, 229, 0.1);
+    border-top-color: #4f46e5;
+    border-radius: 50%;
+    animation: sdv-spin 1s infinite linear;
+}
+
+@keyframes sdv-spin {
+    to { transform: rotate(360deg); }
+}

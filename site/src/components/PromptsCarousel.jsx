@@ -1,10 +1,57 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import Toast from './Toast';
-import PromptCard from './PromptCard';
-import { prompts } from '../Shopify AI Prompts/ShopifyAiPrompt';
+import ShopifyPromptCard from '../Shopify AI Prompts/ShopifyPromptCard';
 import '../styles/PromptsCarousel.css';
+import '../Shopify AI Prompts/ShopifyAiPrompt.css';
 
 function PromptsCarousel() {
+  const [prompts, setPrompts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const apiKey = import.meta.env.VITE_PUBLIC_API_KEY;
+    if (!apiKey) {
+      console.warn('VITE_PUBLIC_API_KEY is not defined in the environment.');
+      setLoading(false);
+      return;
+    }
+    fetch(`https://witvault-backend.onrender.com/api/apikeys/public/${apiKey}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data && Array.isArray(data.prompts)) {
+          const mapped = data.prompts.map(p => {
+            const apiTags = (p.tags || []).map(t => t.toLowerCase());
+            let tag = 'Content';
+            if (apiTags.includes('homepage')) {
+              tag = 'Homepage';
+            } else if (apiTags.includes('hero')) {
+              tag = 'Hero';
+            } else if (apiTags.includes('marketing') || apiTags.includes('sale') || apiTags.includes('subscription')) {
+              tag = 'Marketing';
+            } else if (apiTags.includes('product') || apiTags.includes('products')) {
+              tag = 'Product';
+            } else if (apiTags.includes('social proof') || apiTags.includes('testimonials') || apiTags.includes('reviews') || apiTags.includes('stars')) {
+              tag = 'Social Proof';
+            }
+            return {
+              id: p._id || p.id,
+              title: p.title,
+              tag: tag,
+              desc: p.description || p.desc || p.summary,
+              prompt: p.prompt,
+              img: p.image || null
+            };
+          });
+          setPrompts(mapped);
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Error fetching prompts for carousel:', err);
+        setLoading(false);
+      });
+  }, []);
+
   // Prompts with images first, then fill to 4 total
   const withImg    = prompts.filter(p => p.img);
   const withoutImg = prompts.filter(p => !p.img);
@@ -20,13 +67,13 @@ function PromptsCarousel() {
 
   // Auto-rotate
   useEffect(() => {
-    if (isPaused) return;
-    const interval = setInterval(() => goTo('next'), 6000);
+    if (isPaused || carouselPrompts.length === 0) return;
+    const interval = setInterval(() => goTo('next'), 5000);
     return () => clearInterval(interval);
-  }, [isPaused, activeIndex]);
+  }, [isPaused, activeIndex, carouselPrompts.length]);
 
   const goTo = (dir, targetIndex = null) => {
-    if (animating) return;
+    if (animating || carouselPrompts.length === 0) return;
     const next =
       targetIndex !== null
         ? targetIndex
@@ -44,14 +91,55 @@ function PromptsCarousel() {
     }, 300);
   };
 
-  const handleCopy = (p) => {
-    navigator.clipboard.writeText(p.prompt);
-    setCopiedId(p.id);
-    setToastMessage(`"${p.title}" prompt copied!`);
+  const handleCopy = (e, text) => {
+    e.stopPropagation();
+    navigator.clipboard.writeText(text);
+    setCopiedId(active.id);
+    setToastMessage(`"${active.title}" prompt copied!`);
     setShowToast(true);
     setTimeout(() => setCopiedId(null), 2000);
     setTimeout(() => setShowToast(false), 4500);
   };
+
+  if (loading) {
+    return (
+      <section id="prompts-showcase" className="prompts-section">
+        <div className="section-container">
+          {/* Header */}
+          <div className="section-header">
+            <h2 className="section-title">Shopify AI Section Prompts</h2>
+            <p className="section-subtitle">
+              Copy our optimized, senior-level theme developer prompts to instantly generate
+              fully responsive custom Liquid sections with AI.
+            </p>
+          </div>
+          {/* Shimmering Carousel PromptCard Skeleton matching sdv-featured-card */}
+          <div className="sdv-featured-card" style={{ boxShadow: 'none', border: '1px solid #e8edf2', maxWidth: '800px', margin: '0 auto' }}>
+            <div className="sdv-feat-img">
+              <div className="skeleton skeleton-image" style={{ width: '100%', height: '100%', borderRadius: '0' }} />
+            </div>
+            <div className="sdv-feat-body" style={{ width: '100%' }}>
+              <div className="sdv-feat-top">
+                <div className="skeleton skeleton-tag" />
+              </div>
+              <div className="skeleton skeleton-title" style={{ width: '50%', height: '28px' }} />
+              <div className="skeleton skeleton-text" style={{ width: '90%', height: '14px' }} />
+              <div className="skeleton skeleton-text" style={{ width: '75%', height: '14px' }} />
+              <div className="sdv-prompt-box" style={{ flex: 'none', height: '100px', minHeight: '100px' }}>
+                <div className="skeleton skeleton-text" style={{ width: '95%' }} />
+                <div className="skeleton skeleton-text" style={{ width: '60%' }} />
+              </div>
+              <div className="skeleton skeleton-button" style={{ width: '150px', height: '44px', borderRadius: '11px' }} />
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (carouselPrompts.length === 0) {
+    return null;
+  }
 
   const active = carouselPrompts[activeIndex];
 
@@ -74,13 +162,14 @@ function PromptsCarousel() {
             className="pc-carousel-wrap"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
+            style={{ maxWidth: '800px', margin: '0 auto' }}
           >
-            {/* Slide — uses universal PromptCard */}
+            {/* Slide — uses modular ShopifyPromptCard */}
             <div className={`pc-slide-frame ${animating ? `exit-${direction}` : 'enter'}`}>
-              <PromptCard
+              <ShopifyPromptCard
                 prompt={active}
                 index={activeIndex}
-                isCopied={copiedId === active.id}
+                isFeatured={true}
                 onCopy={handleCopy}
               />
             </div>
@@ -96,12 +185,9 @@ function PromptsCarousel() {
                   <button
                     key={p.id}
                     className={`pc-dot-btn ${i === activeIndex ? 'active' : ''}`}
-                    onClick={() => goTo(i > activeIndex ? 'next' : 'prev', i)}
-                    title={p.title}
-                  >
-                    <span className="pc-dot-num">{String(i + 1).padStart(2, '0')}</span>
-                    <span className="pc-dot-label">{p.title}</span>
-                  </button>
+                    onClick={() => goTo(null, i)}
+                    title={`Slide to step ${i + 1}`}
+                  />
                 ))}
               </div>
 
@@ -112,7 +198,7 @@ function PromptsCarousel() {
           </div>
 
           {/* Footer */}
-          <div className="pc-footer">
+          <div className="pc-footer" style={{ maxWidth: '800px', margin: '28px auto 0' }}>
             <span className="pc-footer-hint">
               <i className="fas fa-magic" />&nbsp;{prompts.length} prompts in the library
             </span>

@@ -49,6 +49,29 @@ body {
     gap: 6px;
 }
 
+.header-icon-btn {
+    background: rgba(255, 255, 255, 0.16);
+    border: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.header-icon-btn:hover {
+    background: rgba(255, 255, 255, 0.35);
+    transform: scale(1.08) rotate(15deg);
+}
+
+.header-icon-btn:active {
+    transform: scale(0.95);
+}
+
 .dot {
     width: 8px;
     height: 8px;
@@ -58,6 +81,7 @@ body {
 
 .container {
     padding: 16px;
+    padding-bottom: 80px; /* Leave room for the fixed bottom bar */
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -428,12 +452,12 @@ body {
 
 /* Selected Bar (Floating Interface) */
 .selected-actions-bar {
-    position: sticky;
+    position: fixed;
     bottom: 16px;
-    left: 0;
-    right: 0;
+    left: 16px;
+    right: 16px;
     z-index: 100;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(8px);
     border: 1px solid rgba(124, 58, 237, 0.3);
     padding: 12px 20px;
@@ -441,9 +465,8 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
     animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    margin: 8px 0;
 }
 
 .selected-actions-bar span {
@@ -640,4 +663,22 @@ button:disabled {
     outline: none;
     border-color: #7c3aed;
     box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
+}
+
+/* Spacer utilities */
+.mt-12 {
+    margin-top: 16px !important;
+}
+
+/* Header Version Badge */
+.header-version {
+    font-size: 10px;
+    background: rgba(255, 255, 255, 0.22);
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-weight: 600;
+    margin-left: 6px;
+    vertical-align: middle;
+    color: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.15);
 }

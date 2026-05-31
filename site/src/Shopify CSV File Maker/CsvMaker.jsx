@@ -60,7 +60,7 @@ function CsvMaker() {
   const [showMapping, setShowMapping] = useState(false);
   const [previewRows, setPreviewRows] = useState([]);
   const [bulkRows, setBulkRows] = useState([]);
-  const [columnSelectors, setColumnSelectors] = useState([]);
+  const [bulkColumns, setBulkColumns] = useState([]);
   const [columnMappings, setColumnMappings] = useState({});
   const [skipHeader, setSkipHeader] = useState(false);
   const [importMode, setImportMode] = useState('new');

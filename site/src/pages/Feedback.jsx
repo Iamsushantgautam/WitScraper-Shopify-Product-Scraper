@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Toast from '../components/Toast';
 import './Pages.css';
 
 function Feedback() {
@@ -8,25 +7,57 @@ function Feedback() {
   const [feedbackCategory, setFeedbackCategory] = useState('Usability');
   const [comments, setComments] = useState('');
   
-  // Toast notifications state
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
+  const [status, setStatus] = useState({ type: '', message: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setStatus({ type: '', message: '' });
     
-    // Simulate feedback submission
-    setToastMessage(`Thank you! Your ${rating}-star feedback has been registered.`);
-    setShowToast(true);
-    
-    // Reset inputs
-    setRating(5);
-    setComments('');
-    setFeedbackCategory('Usability');
-
-    setTimeout(() => {
-      setShowToast(false);
-    }, 3000);
+    fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify({
+        access_key: 'b3b48ffe-9e5e-41c5-b7f6-b4e505acff7e',
+        formType: 'Feedback Form',
+        email: 'iamsushantgatam@gmail.com',
+        _email: 'iamsushantgatam@gmail.com',
+        _replyto: 'iamsushantgatam@gmail.com',
+        rating: rating,
+        category: feedbackCategory,
+        comments: comments
+      }),
+    })
+      .then(async (res) => {
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || !json.success) {
+          const errMsg = json.message || `Submission failed with status ${res.status}`;
+          throw new Error(errMsg);
+        }
+        const msg = `Thank you! Your ${rating}-star feedback has been registered.`;
+        setStatus({ type: 'success', message: msg });
+        // Reset inputs
+        setRating(5);
+        setComments('');
+        setFeedbackCategory('Usability');
+      })
+      .catch(err => {
+        console.error('Error submitting feedback form:', err);
+        const errMsg = err.message === 'Failed to fetch'
+          ? "Network error. Please check your internet or domain restriction settings."
+          : `Submission failed: ${err.message}`;
+        setStatus({ type: 'error', message: errMsg });
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+        setTimeout(() => {
+          setStatus({ type: '', message: '' });
+        }, 6000);
+      });
   };
 
   return (
@@ -93,17 +124,34 @@ function Feedback() {
             />
           </div>
 
-          <button type="submit" className="btn-submit">
-            <i className="fas fa-check-circle"></i> Submit Feedback
-          </button>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'flex-start' }}>
+            <button type="submit" className="btn-submit" disabled={isSubmitting} style={{ marginTop: 0 }}>
+              {isSubmitting ? (
+                <>
+                  <i className="fas fa-spinner fa-spin" style={{ marginRight: '8px' }}></i> Sending...
+                </>
+              ) : (
+                <>
+                  <i className="fas fa-check-circle"></i> Submit Feedback
+                </>
+              )}
+            </button>
+
+            {status.message && (
+              <div className={`form-status-msg ${status.type}`}>
+                {status.type === 'success' ? (
+                  <i className="fas fa-check-circle"></i>
+                ) : (
+                  <i className="fas fa-exclamation-circle"></i>
+                )}
+                <span>{status.message}</span>
+              </div>
+            )}
+          </div>
 
         </form>
 
       </div>
-
-      {/* Global Toast component */}
-      <Toast showToast={showToast} toastMessage={toastMessage} />
-
     </div>
   );
 }

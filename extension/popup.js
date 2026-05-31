@@ -322,7 +322,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         ];
 
         const defaultInventoryInput = document.getElementById('default-inventory');
-        const defaultInvValue = defaultInventoryInput ? parseInt(defaultInventoryInput.value, 10) : NaN;
+        let defaultInvValue = defaultInventoryInput ? parseInt(defaultInventoryInput.value, 10) : 50;
+        if (isNaN(defaultInvValue) || defaultInvValue < 0) {
+            defaultInvValue = 50;
+        }
 
         let rows = [];
         products.forEach(p => {
@@ -398,5 +401,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         str = String(str).replace(/"/g, '""');
         if (str.search(/("|,|\n)/g) >= 0) str = `"${str}"`;
         return str;
+    }
+
+    // 6. Visit Web App Listeners
+    const handleVisitWebapp = () => {
+        chrome.tabs.create({ url: 'http://localhost:5173' });
+    };
+
+    const btnVisitWebapp = document.getElementById('btn-visit-webapp');
+    if (btnVisitWebapp) {
+        btnVisitWebapp.addEventListener('click', handleVisitWebapp);
     }
 });

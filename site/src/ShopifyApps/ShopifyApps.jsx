@@ -64,6 +64,9 @@ const APP_CATEGORIES_META = {
 };
 
 const ShopifyApps = () => {
+    const [appsList, setAppsList] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [search, setSearch] = useState('');
     const [activeCategory, setActiveCategory] = useState('All');
     const [toast, setToast] = useState({ show: false, message: '' });
@@ -94,416 +97,94 @@ const ShopifyApps = () => {
         { value: 'Rating', label: 'Highest Rating' }
     ];
 
-    const apps = [
-        {
-            id: 'pagefly',
-            name: 'PageFly Landing Page Builder',
-            category: 'Page Builders',
-            rating: '4.9',
-            reviews: '9,000+',
-            price: 'Free plan available',
-            desc: 'Create highly responsive, stunning landing pages, product page templates, and homepages with an intuitive zero-code drag-and-drop builder.',
-            link: 'https://apps.shopify.com/pagefly',
-            benefit: 'Drag & Drop Builder',
-            whyBest: 'Provides the most extensive free tier and customizable elements of any Shopify builder.',
-            color: 'icon-blue'
-        },
-        {
-            id: 'shogun',
-            name: 'Shogun Page Builder',
-            category: 'Page Builders',
-            rating: '4.7',
-            reviews: '3,200+',
-            price: '10-day free trial',
-            desc: 'Advanced page editor featuring built-in A/B testing, conversion analytics, global site speed optimization, and custom developer elements.',
-            link: 'https://apps.shopify.com/shogun',
-            benefit: 'A/B Testing & Speed',
-            whyBest: 'Best for enterprise stores looking to split test landing pages and optimize loading speed.',
-            color: 'icon-blue'
-        },
-        {
-            id: 'gempages',
-            name: 'GemPages Powerful Page Builder',
-            category: 'Page Builders',
-            rating: '4.9',
-            reviews: '3,800+',
-            price: 'Free plan available',
-            desc: 'Design high-converting landing pages, custom homepages, and visual sales funnels using a premium drag-and-drop page editor.',
-            link: 'https://apps.shopify.com/gempages',
-            benefit: 'Visual Sales Funnels',
-            whyBest: 'Unbelievably rich template library designed specifically for quick product drops and drop-shipping funnels.',
-            color: 'icon-blue'
-        },
-        {
-            id: 'klaviyo',
-            name: 'Klaviyo: Email & SMS',
-            category: 'Marketing',
-            rating: '4.6',
-            reviews: '1,800+',
-            price: 'Free to install',
-            desc: 'The gold standard e-commerce email marketing suite. Set up advanced customer segmentation, automated email/SMS flows, and rich data campaigns.',
-            link: 'https://apps.shopify.com/klaviyo',
-            benefit: 'Automated Ecom Flows',
-            whyBest: 'Unmatched store data integration allows highly personalized automation and precise revenue tracking.',
-            color: 'icon-orange'
-        },
-        {
-            id: 'privy',
-            name: 'Privy - Pop Ups, Email & SMS',
-            category: 'Marketing',
-            rating: '4.6',
-            reviews: '24,000+',
-            price: 'Free plan available',
-            desc: 'Grow your email list rapidly using exit-intent popups, spin-to-win discount wheels, banner alerts, and cart abandonment SMS triggers.',
-            link: 'https://apps.shopify.com/privy',
-            benefit: 'List Growth Popups',
-            whyBest: 'The absolute king of lead capturing widgets, widely trusted with over 24k positive reviews.',
-            color: 'icon-orange'
-        },
-        {
-            id: 'omnisend',
-            name: 'Omnisend Email & SMS Marketing',
-            category: 'Marketing',
-            rating: '4.8',
-            reviews: '5,000+',
-            price: 'Free plan available',
-            desc: 'Omnichannel marketing automation specifically built for e-commerce. Send beautiful emails, popups, and automated SMS campaigns.',
-            link: 'https://apps.shopify.com/omnisend',
-            benefit: 'Omnichannel Automation',
-            whyBest: 'Incredibly easy drag-and-drop editor with pre-built automation workflows that save hours of setup.',
-            color: 'icon-orange'
-        },
-        {
-            id: 'smile',
-            name: 'Smile: Loyalty & Rewards',
-            category: 'Marketing',
-            rating: '4.8',
-            reviews: '5,700+',
-            price: 'Free plan available',
-            desc: 'Boost customer retention with high-converting loyalty points programs, referral systems, and customized VIP tiered rewards.',
-            link: 'https://apps.shopify.com/smile-io',
-            benefit: 'Customer Retention Points',
-            whyBest: 'The most reliable loyalty points system on Shopify, featuring frictionless cart checkout point redemption.',
-            color: 'icon-orange'
-        },
-        {
-            id: 'freeshippingbar',
-            name: 'Hextom: Free Shipping Bar',
-            category: 'Marketing',
-            rating: '4.9',
-            reviews: '11,000+',
-            price: 'Free plan available',
-            desc: 'Drive higher average order value (AOV) by showing a fully customizable, responsive bar at the top of your page with progressive free shipping goals.',
-            link: 'https://apps.shopify.com/free-shipping-bar',
-            benefit: 'AOV-boosting goal bar',
-            whyBest: 'The undisputed king of announcement bars. Simple, highly responsive, and proven to raise conversion rates.',
-            color: 'icon-orange'
-        },
-        {
-            id: 'pushowl',
-            name: 'PushOwl Web Push Notifications',
-            category: 'Marketing',
-            rating: '4.8',
-            reviews: '2,800+',
-            price: 'Free plan available',
-            desc: 'Send immediate web push notifications directly to screens. Recover abandoned carts, promote campaigns, and alert back-in-stock items instantly.',
-            link: 'https://apps.shopify.com/pushowl',
-            benefit: 'High-conversion push ads',
-            whyBest: 'Best alternative to emails with up to 5x higher opt-in and click-through rates for instant marketing outreach.',
-            color: 'icon-orange'
-        },
-        {
-            id: 'judgeme',
-            name: 'Judge.me Product Reviews',
-            category: 'Social Proof',
-            rating: '5.0',
-            reviews: '23,000+',
-            price: 'Forever free plan',
-            desc: 'Lightning-fast product reviews app supporting photo/video reviews, custom Q&A grids, email review collection, and Google Search rich snippets.',
-            link: 'https://apps.shopify.com/judgeme',
-            benefit: 'Forever Free Plan',
-            whyBest: 'Offers premium features (like photo reviews and Google SEO integration) completely free without limits.',
-            color: 'icon-purple'
-        },
-        {
-            id: 'loox',
-            name: 'Loox Product Reviews & Photos',
-            category: 'Social Proof',
-            rating: '4.9',
-            reviews: '16,000+',
-            price: '14-day free trial',
-            desc: 'Visually striking product reviews featuring beautiful grid collages, homepage reviews sliders, popups, and automatic review discount incentives.',
-            link: 'https://apps.shopify.com/loox',
-            benefit: 'Elegant Photo Grids',
-            whyBest: 'Outstanding design and aesthetic that transforms customer photos into stunning, premium social proof widgets.',
-            color: 'icon-purple'
-        },
-        {
-            id: 'yotpo',
-            name: 'Yotpo Reviews & Photos',
-            category: 'Social Proof',
-            rating: '4.6',
-            reviews: '6,700+',
-            price: 'Free plan available',
-            desc: 'Collect high-converting product reviews, ratings, customer photos, and custom Q&A grids to build buyer trust and increase conversions.',
-            link: 'https://apps.shopify.com/yotpo-social-reviews',
-            benefit: 'Google SEO Syndication',
-            whyBest: 'Best enterprise reviews suite with direct search results syndication and native integration with Google Shopping ads.',
-            color: 'icon-purple'
-        },
-        {
-            id: 'avada',
-            name: 'Avada Trust Badges & Icons',
-            category: 'Social Proof',
-            rating: '4.9',
-            reviews: '5,200+',
-            price: 'Forever free plan',
-            desc: 'Boost buyer trust and conversion rates with highly customizable security badges, shipping trust icons, and payment trust badges.',
-            link: 'https://apps.shopify.com/avada-trust-badges',
-            benefit: 'Custom security badges',
-            whyBest: 'Has a massive library of 500+ premium vector icons to build absolute trust instantly on cart pages.',
-            color: 'icon-purple'
-        },
-        {
-            id: 'alireviews',
-            name: 'Ali Reviews ‑ Product Reviews',
-            category: 'Social Proof',
-            rating: '4.9',
-            reviews: '13,000+',
-            price: '7-day free trial',
-            desc: 'Import thousands of customer reviews with photos from AliExpress and Amazon in one click. Display stunning custom review widgets, badges, and grids.',
-            link: 'https://apps.shopify.com/ali-reviews-product-reviews',
-            benefit: 'One-click AliExpress importer',
-            whyBest: 'Essential tool for e-commerce dropshippers to establish instant social proof and credibility overnight.',
-            color: 'icon-purple'
-        },
-        {
-            id: 'tinyimg',
-            name: 'TinyIMG SEO & Image Optimizer',
-            category: 'SEO & Speed',
-            rating: '4.9',
-            reviews: '1,500+',
-            price: 'Free plan available',
-            desc: 'Automatically compresses heavy store images, auto-generates SEO-friendly Alt tags, checks meta tags, and fixes site speed bottlenecks.',
-            link: 'https://apps.shopify.com/tinyimg-seo-image-optimizer',
-            benefit: 'Automatic Speed Boost',
-            whyBest: 'Set-it-and-forget-it automated optimization keeps store loading times fast and improves organic ranking.',
-            color: 'icon-green'
-        },
-        {
-            id: 'pluginseo',
-            name: 'Plug in SEO',
-            category: 'SEO & Speed',
-            rating: '4.7',
-            reviews: '2,500+',
-            price: '14-day free trial',
-            desc: 'Comprehensive all-in-one SEO dashboard to monitor, edit, and optimize your store\'s search engine visibility, schema data, and broken redirects.',
-            link: 'https://apps.shopify.com/plug-in-seo',
-            benefit: 'SEO Ranking Checker',
-            whyBest: 'Excellent diagnostics tool that provides step-by-step instructions to fix rank-damaging store errors.',
-            color: 'icon-green'
-        },
-        {
-            id: 'booster',
-            name: 'Booster SEO & Image Optimizer',
-            category: 'SEO & Speed',
-            rating: '4.9',
-            reviews: '6,100+',
-            price: 'Free plan available',
-            desc: 'All-in-one automated SEO optimization. Auto-fixes meta tags, image Alt text, broken links, and compresses image sizes instantly.',
-            link: 'https://apps.shopify.com/booster-seo-image-optimizer',
-            benefit: 'Automated Meta Tags',
-            whyBest: 'Continuously monitors Google search ranking rules and adjusts store metadata dynamically to stay compliant.',
-            color: 'icon-green'
-        },
-        {
-            id: 'recharge',
-            name: 'Recharge Subscriptions',
-            category: 'Subscriptions & Upsell',
-            rating: '4.8',
-            reviews: '2,000+',
-            price: 'Free to install',
-            desc: 'Convert one-time shoppers into lifetime subscribers. Build highly customizable subscriber portals, subscription boxes, and automated recurring billing.',
-            link: 'https://apps.shopify.com/recharge-recurring-billing',
-            benefit: 'Recurring Revenue Engine',
-            whyBest: 'The industry-standard subscription system with fully developer-customizable billing APIs and portals.',
-            color: 'icon-orange'
-        },
-        {
-            id: 'fbt',
-            name: 'Frequently Bought Together',
-            category: 'Subscriptions & Upsell',
-            rating: '4.9',
-            reviews: '5,800+',
-            price: '30-day free trial',
-            desc: 'Replicates Amazon\'s intelligent bundle recommendations. Increases Average Order Value (AOV) through automatic single-click bundle upsells.',
-            link: 'https://apps.shopify.com/frequently-bought-together',
-            benefit: 'AOV Bundle Booster',
-            whyBest: 'Highly lightweight widget with powerful AI recommendation algorithms that immediately raise checkouts size.',
-            color: 'icon-orange'
-        },
-        {
-            id: 'bold',
-            name: 'Bold Subscriptions',
-            category: 'Subscriptions & Upsell',
-            rating: '4.5',
-            reviews: '2,800+',
-            price: '60-day free trial',
-            desc: 'Create powerful subscription flows, custom interval rules, build-a-box features, and robust customer dashboard management.',
-            link: 'https://apps.shopify.com/bold-subscriptions',
-            benefit: 'Custom intervals & boxes',
-            whyBest: 'Native checkout integration makes customer sub-payments seamless and increases subscriber longevity.',
-            color: 'icon-orange'
-        },
-        {
-            id: 'reconvert',
-            name: 'ReConvert Post Purchase Upsell',
-            category: 'Subscriptions & Upsell',
-            rating: '4.9',
-            reviews: '4,300+',
-            price: 'Free plan available',
-            desc: 'Increase store revenues with post-purchase upsells, checkout upsells, dynamic product recommendations, and custom Thank You page drag-and-drop elements.',
-            link: 'https://apps.shopify.com/reconvert-upsell-cross-sell',
-            benefit: 'One-click upsell conversion',
-            whyBest: 'Consistently rated the highest ROI upsell app that captures buyers at their peak moment of purchase.',
-            color: 'icon-orange'
-        },
-        {
-            id: 'gorgias',
-            name: 'Gorgias ‑ Helpdesk & Live Chat',
-            category: 'Customer Support',
-            rating: '4.6',
-            reviews: '600+',
-            price: '7-day free trial',
-            desc: 'Centralized helpdesk that combines customer queries from Live Chat, Email, Instagram, Facebook, and Phone into a single organized agent panel.',
-            link: 'https://apps.shopify.com/gorgias',
-            benefit: 'Unified Ticket Hub',
-            whyBest: 'Integrates natively with Shopify order panels, enabling agents to refund, cancel, or edit orders directly inside support chats.',
-            color: 'icon-green'
-        },
-        {
-            id: 'tidio',
-            name: 'Tidio ‑ Live Chat & Chatbots',
-            category: 'Customer Support',
-            rating: '4.7',
-            reviews: '1,700+',
-            price: 'Free plan available',
-            desc: 'Convert visitors into buyers with instant Live Chat support, AI-powered chatbots, and centralized customer ticket tracking.',
-            link: 'https://apps.shopify.com/tidio-chat',
-            benefit: 'AI-Powered Support Bots',
-            whyBest: 'Simplest pre-built support chatbots that automatically handle cart rescue and shipping queries 24/7.',
-            color: 'icon-green'
-        },
-        {
-            id: 'helpcenter',
-            name: 'HelpCenter: FAQ Page & Helpdesk',
-            category: 'Customer Support',
-            rating: '4.7',
-            reviews: '1,300+',
-            price: 'Free plan available',
-            desc: 'Build beautiful, searchable FAQ pages that answer customer questions instantly. Includes an intuitive customer helpdesk and email ticketing system.',
-            link: 'https://apps.shopify.com/helpcenter',
-            benefit: 'Searchable FAQ Builder',
-            whyBest: 'Creates the most professional, clean FAQ portals that dramatically reduce incoming support inquiry load.',
-            color: 'icon-green'
-        },
-        {
-            id: 'shipstation',
-            name: 'ShipStation',
-            category: 'Shipping & Delivery',
-            rating: '4.6',
-            reviews: '1,200+',
-            price: '30-day free trial',
-            desc: 'Import, manage, and ship orders easily. Print discounted shipping labels for USPS, UPS, FedEx, DHL, and more in seconds.',
-            link: 'https://apps.shopify.com/shipstation',
-            benefit: 'Multi-carrier shipping',
-            whyBest: 'The industry-leading shipping tool that automates label printing, tracking updates, and return portals for high-volume stores.',
-            color: 'icon-red'
-        },
-        {
-            id: 'easyship',
-            name: 'Easyship ‑ All‑in‑One Shipping',
-            category: 'Shipping & Delivery',
-            rating: '4.5',
-            reviews: '380+',
-            price: 'Free to install',
-            desc: 'Access 250+ couriers and pre-negotiated shipping rates with up to 89% off. Display dynamic taxes, duties, and delivery rates at checkout.',
-            link: 'https://apps.shopify.com/easyship',
-            benefit: 'Discounted carrier rates',
-            whyBest: 'Provides the best automated duties and taxes calculator for international customer checkouts.',
-            color: 'icon-red'
-        },
-        {
-            id: 'wholesalegorilla',
-            name: 'Wholesale Gorilla B2B & Wholesale',
-            category: 'Inventory & Wholesale',
-            rating: '4.7',
-            reviews: '300+',
-            price: '30-day free trial',
-            desc: 'Supercharge your B2B commerce. Set custom wholesale price lists, net terms (Net 15/30/60), minimum order limits, and custom wholesale registration forms.',
-            link: 'https://apps.shopify.com/wholesale-gorilla',
-            benefit: 'Seamless B2B portal',
-            whyBest: 'The most reliable and customizable Wholesale/B2B portal builder that integrates perfectly without split-store setups.',
-            color: 'icon-green'
-        },
-        {
-            id: 'katana',
-            name: 'Katana Cloud Manufacturing ERP',
-            category: 'Inventory & Wholesale',
-            rating: '4.8',
-            reviews: '150+',
-            price: '14-day free trial',
-            desc: 'Keep track of inventory, raw materials, manufacturing schedules, and multi-channel sales orders in real time with a powerful modern ERP.',
-            link: 'https://apps.shopify.com/katana',
-            benefit: 'Production & ERP tracking',
-            whyBest: 'Outstanding visual interface designed specifically for maker-manufacturers and D2C brands who build their own goods.',
-            color: 'icon-green'
-        },
-        {
-            id: 'matrixify',
-            name: 'Matrixify (Excelify)',
-            category: 'Data & Operations',
-            rating: '4.9',
-            reviews: '400+',
-            price: 'Free plan available',
-            desc: 'Bulk import, export, update, and migrate massive e-commerce store data (products, orders, collections, customers) using Excel or Google Sheets.',
-            link: 'https://apps.shopify.com/excelify',
-            benefit: 'Bulk Sheets Migration',
-            whyBest: 'The ultimate developer tool for handling complex data migrations and bulk product updates without API timeouts.',
-            color: 'icon-blue'
-        },
-        {
-            id: 'orderprinter',
-            name: 'Order Printer: PDF Invoice',
-            category: 'Data & Operations',
-            rating: '4.8',
-            reviews: '12,000+',
-            price: 'Forever free',
-            desc: 'Easily print high-quality invoices, receipts, packing slips, and order sheets directly from your Shopify admin.',
-            link: 'https://apps.shopify.com/order-printer',
-            benefit: 'PDF packing invoices',
-            whyBest: 'Official free utility from Shopify to generate standard, custom-branded PDF packing invoices instantly.',
-            color: 'icon-blue'
-        },
-        {
-            id: 'rewind',
-            name: 'Rewind Backups & Disaster Recovery',
-            category: 'Data & Operations',
-            rating: '4.8',
-            reviews: '1,000+',
-            price: '7-day free trial',
-            desc: 'Automatic daily backups for your Shopify store. Securely back up products, images, themes, metadata, orders, and customer lists to prevent data loss.',
-            link: 'https://apps.shopify.com/rewind-backups',
-            benefit: 'Continuous automated backups',
-            whyBest: 'The gold standard for e-commerce store safety. Sleep peacefully knowing you can undo any mistakes or code crashes instantly.',
-            color: 'icon-blue'
+    const fetchApps = () => {
+        setLoading(true);
+        setError(null);
+        const apiKey = import.meta.env.VITE_PUBLIC_API_KEY;
+        if (!apiKey) {
+            setError('API key configuration is missing');
+            setLoading(false);
+            return;
         }
-    ];
+        fetch(`https://witvault-backend.onrender.com/api/apikeys/public/${apiKey}`)
+            .then(res => {
+                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                return res.json();
+            })
+            .then(data => {
+                if (data && Array.isArray(data.shopifyApps)) {
+                    const mapped = data.shopifyApps.map(p => {
+                        const getCategoryColor = (cat) => {
+                            switch (cat) {
+                                case 'Page Builders':
+                                case 'Data & Operations':
+                                    return 'icon-blue';
+                                case 'Marketing':
+                                case 'Subscriptions & Upsell':
+                                    return 'icon-orange';
+                                case 'Social Proof':
+                                    return 'icon-purple';
+                                case 'SEO & Speed':
+                                case 'Customer Support':
+                                case 'Inventory & Wholesale':
+                                    return 'icon-green';
+                                case 'Shipping & Delivery':
+                                    return 'icon-red';
+                                default:
+                                    return 'icon-blue';
+                            }
+                        };
+
+                        const getBenefitText = () => {
+                            if (p.tags && p.tags.length > 0) {
+                                const tag = p.tags[0];
+                                return tag.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+                            }
+                            return 'Premium Feature';
+                        };
+
+                        const getPriceText = () => {
+                            if (p.pricingTags && p.pricingTags.length > 0) {
+                                return p.pricingTags[0];
+                            }
+                            return 'Free plan available';
+                        };
+
+                        return {
+                            id: p._id || p.id,
+                            name: p.title,
+                            category: p.category,
+                            rating: String(p.rating || '0.0'),
+                            reviews: p.reviewsCount || '0',
+                            price: getPriceText(),
+                            desc: p.description || p.desc || '',
+                            link: p.url,
+                            benefit: getBenefitText(),
+                            whyBest: p.whyItsBest || '',
+                            color: getCategoryColor(p.category)
+                        };
+                    });
+                    setAppsList(mapped);
+                } else {
+                    throw new Error('Invalid data structure received');
+                }
+                setLoading(false);
+            })
+            .catch(err => {
+                console.error('Error fetching apps:', err);
+                setError(err.message || 'Unknown error');
+                setLoading(false);
+            });
+    };
+
+    useEffect(() => {
+        fetchApps();
+    }, []);
 
     // Automatically generate unique category list dynamically from the actual apps array
-    const categories = ['All', ...new Set(apps.map(app => app.category))];
+    const categories = ['All', ...new Set(appsList.map(app => app.category))];
 
-    const filteredApps = apps
+    const filteredApps = appsList
         .filter(app => {
             const matchCategory = activeCategory === 'All' || app.category === activeCategory;
             
@@ -577,7 +258,9 @@ const ShopifyApps = () => {
                                     <svg width="8" height="8" viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="5" r="5" /></svg>
                                     Shopify App Hub
                                 </span>
-                                <span className="sapps-badge-count">{filteredApps.length} app{filteredApps.length !== 1 ? 's' : ''}</span>
+                                <span className="sapps-badge-count">
+                                    {loading ? '...' : `${filteredApps.length} app${filteredApps.length !== 1 ? 's' : ''}`}
+                                </span>
                             </div>
                             <h1 className="sapps-hero-title">
                                 Best Apps for <span className="sapps-title-glow">Shopify Builders</span>
@@ -595,6 +278,7 @@ const ShopifyApps = () => {
                                     placeholder="Search apps…"
                                     value={search}
                                     onChange={e => setSearch(e.target.value)}
+                                    disabled={loading || error}
                                 />
                                 {search && (
                                     <button className="sapps-clear" onClick={() => setSearch('')}>
@@ -606,6 +290,7 @@ const ShopifyApps = () => {
                                 className={`sapps-filter-toggle ${showFilters ? 'active' : ''}`}
                                 onClick={() => setShowFilters(!showFilters)}
                                 title="Toggle advanced filters"
+                                disabled={loading || error}
                             >
                                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                                     <path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 12h6" />
@@ -648,6 +333,7 @@ const ShopifyApps = () => {
                                     key={cat}
                                     className={`sapps-tag ${isActive ? 'active' : ''}`}
                                     onClick={() => setActiveCategory(cat)}
+                                    disabled={loading || error}
                                     style={isActive ? {
                                         background: info.color,
                                         borderColor: info.color,
@@ -665,39 +351,89 @@ const ShopifyApps = () => {
 
             {/* ── Main Apps Grid ── */}
             <main className="sapps-grid-wrapper">
-                <div className="sapps-results-count">
-                    Found <strong>{filteredApps.length}</strong> top-performing Shopify app{filteredApps.length !== 1 ? 's' : ''}
-                </div>
-
-                {filteredApps.length === 0 ? (
+                {loading ? (
+                    <div className="sapps-grid">
+                        {[1, 2, 3, 4, 5, 6].map(n => (
+                            <article key={n} className="sapps-card" style={{ height: 'auto' }}>
+                                <div className="sapps-card-header" style={{ marginBottom: '1.25rem' }}>
+                                    <div className="sapps-icon-box" style={{ background: 'transparent', boxShadow: 'none' }}>
+                                        <div className="skeleton skeleton-image" style={{ width: '100%', height: '100%', borderRadius: '16px' }} />
+                                    </div>
+                                    <div className="sapps-title-area" style={{ width: '100%' }}>
+                                        <div className="sapps-meta-row" style={{ gap: '8px' }}>
+                                            <div className="skeleton skeleton-tag" />
+                                            <div className="skeleton skeleton-tag" style={{ width: '60px' }} />
+                                        </div>
+                                        <div className="skeleton skeleton-title" style={{ width: '80%', height: '20px', marginTop: '8px', marginBottom: '0' }} />
+                                    </div>
+                                </div>
+                                <div className="sapps-card-body" style={{ gap: '1rem', marginBottom: '1.25rem' }}>
+                                    <div className="skeleton skeleton-text" style={{ width: '95%' }} />
+                                    <div className="skeleton skeleton-text" style={{ width: '70%' }} />
+                                    <div className="sapps-highlight-box" style={{ borderRadius: '12px', borderLeftColor: '#e2e8f0', background: '#f8fafc', padding: '0.85rem' }}>
+                                        <div className="skeleton skeleton-text" style={{ width: '35%', height: '10px' }} />
+                                        <div className="skeleton skeleton-text" style={{ width: '90%', height: '12px' }} />
+                                        <div className="skeleton skeleton-text" style={{ width: '60%', height: '12px' }} />
+                                    </div>
+                                    <div className="sapps-badges-row">
+                                        <div className="skeleton skeleton-tag" style={{ width: '110px', height: '24px', borderRadius: '8px' }} />
+                                        <div className="skeleton skeleton-tag" style={{ width: '90px', height: '24px', borderRadius: '8px' }} />
+                                    </div>
+                                </div>
+                                <div className="sapps-card-footer" style={{ gap: '0.75rem', paddingTop: '1.25rem' }}>
+                                    <div className="skeleton skeleton-button" style={{ flex: '1', height: '38px', borderRadius: '12px' }} />
+                                    <div className="skeleton skeleton-button" style={{ flex: '1', height: '38px', borderRadius: '12px' }} />
+                                </div>
+                            </article>
+                        ))}
+                    </div>
+                ) : error ? (
                     <div className="sapps-empty-state">
-                        <span className="sapps-empty-icon">🔍</span>
-                        <h3>No Apps Match Your Query</h3>
-                        <p>Try searching for a different category or clearing your current text search filter.</p>
-                        <button className="btn-primary" onClick={() => { 
-                            setSearch(''); 
-                            setActiveCategory('All'); 
-                            setPriceFilter('All');
-                            setRatingFilter('All');
-                            setSortBy('Reviews');
-                        }}>
-                            Clear All Filters
+                        <span className="sapps-empty-icon">⚠️</span>
+                        <h3>Error Loading Apps</h3>
+                        <p>{error}</p>
+                        <button className="btn-primary" onClick={fetchApps}>
+                            Retry
                         </button>
                     </div>
                 ) : (
-                    <div className="sapps-grid">
-                        {filteredApps.map(app => (
-                            <ShopifyAppCard
-                                key={app.id}
-                                app={app}
-                                onCopyName={triggerToast}
-                            />
-                        ))}
-                    </div>
+                    <>
+                        <div className="sapps-results-count">
+                            Found <strong>{filteredApps.length}</strong> top-performing Shopify app{filteredApps.length !== 1 ? 's' : ''}
+                        </div>
+
+                        {filteredApps.length === 0 ? (
+                            <div className="sapps-empty-state">
+                                <span className="sapps-empty-icon">🔍</span>
+                                <h3>No Apps Match Your Query</h3>
+                                <p>Try searching for a different category or clearing your current text search filter.</p>
+                                <button className="btn-primary" onClick={() => { 
+                                    setSearch(''); 
+                                    setActiveCategory('All'); 
+                                    setPriceFilter('All');
+                                    setRatingFilter('All');
+                                    setSortBy('Reviews');
+                                }}>
+                                    Clear All Filters
+                                </button>
+                            </div>
+                        ) : (
+                            <div className="sapps-grid">
+                                {filteredApps.map(app => (
+                                    <ShopifyAppCard
+                                        key={app.id}
+                                        app={app}
+                                        onCopyName={triggerToast}
+                                    />
+                                ))}
+                            </div>
+                        )}
+                    </>
                 )}
             </main>
         </div>
     );
 };
+
 
 export default ShopifyApps;

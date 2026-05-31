@@ -26,6 +26,7 @@ function Footer() {
             <a href="/csv-maker">CSV Master Tool</a>
             <a href="/shopifyaiprompts">Shopify AI Prompts</a>
             <a href="/shopify-apps">Shopify Apps</a>
+            <a href="/docs">Docs & Features</a>
           </div>
 
           <div className="footer-links-col">
