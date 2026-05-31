@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Host
+Host: https://witscraper.vercel.app
+
+# Sitemap location
+Sitemap: https://witscraper.vercel.app/sitemap.xml
