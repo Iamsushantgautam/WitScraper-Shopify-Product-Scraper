@@ -37,7 +37,7 @@ function PromptsCarousel() {
   };
 
   useEffect(() => {
-    const apiKey = import.meta.env.VITE_PUBLIC_API_KEY;
+    const apiKey = import.meta.env.VITE_PUBLIC_API_KEY || 'wkv_8e77eaa25c99e24079683fc365827c81acf69938fa0a9c8c';
 
     const handleLoadFromCache = () => {
       const cached = localStorage.getItem('witscraper_cached_prompts');
