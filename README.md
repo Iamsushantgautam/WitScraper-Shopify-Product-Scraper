@@ -1,113 +1,82 @@
-# 🛍️ WitScraper – Shopify Product Scraper
+# 🛍️ WitScraper – Shopify Product Scraper (Chrome Extension)
 
-A state-of-the-art developer and e-commerce utility designed to instantly identify, scrape, and export complete product databases from any Shopify-powered storefront. Built with private, local-first execution paradigms and zero third-party dependencies, WitScraper delivers verified, multi-variant CSV files fully compatible with Shopify's direct product importer.
+A lightweight, powerful, and private-first Chrome extension designed to extract complete product databases—including title details, variant configurations, exact pricing, image assets, and SEO descriptions—from any Shopify-powered online store. Export directly to a properly formatted CSV ready for Shopify import verification.
 
-This repository features a **dual-architecture layout** containing:
-1.  **📦 Chrome Extension**: An unpacked, ultra-lightweight browser utility.
-2.  **⚛️ React Web Landing Page**: A premium, glassmorphic single-page presentation built on React and Vite, featuring an interactive live scraper simulation engine.
+This directory contains the isolated, unpacked source files for the **WitScraper Chrome Extension**.
 
 ---
 
-## 🎨 Technology Stack & Optimization
+## ✨ Features
 
-*   **Chrome Extension Core**: Vanilla HTML5, CSS3, and high-performance Javascript.
-*   **Asset Footprint (Optimized)**: The primary 1.6MB icon has been systematically downscaled and compressed to four web-standard outputs (`16px`, `32px`, `48px`, `128px`), shrinking extension storage requirements by **98.7%** (only ~20KB total!).
-*   **Web Portal**: React 18, Vite 8, and Outfit + Inter typography, featuring custom 3D coordinate-tracking components and real-time state simulators.
-
----
-
-## ✨ Core Features
-
-*   **🔍 Auto-Detection**: Instantly audits the active webpage to identify active Shopify configurations and global scripts.
-*   **📊 Comprehensive Data Mapping**: Extracts variant titles, individual option values, SKU databases, weights (grams), tags, image assets, SEO headers, prices, and cost-per-item calculations.
-*   **📚 Collection Auditing**: Detects store collection channels and updates popup selectors to filter and scrape targeted categories.
-*   **💾 Multi-variant Support**: Processes complex, multi-row variant structures cleanly, maintaining parent-child relations for flawless imports.
-*   **⚡ Multiple Export Engines**: Download complete product catalogs, specific selected items via checkout check-boxes, or single listings instantly.
-*   **🔒 Local and Secure**: Zero cloud connections, zero tracking trackers, and completely transparent local-unpacked builds.
+*   **⚡ Ambient Store Auditing**: Instantly scans your active browser tab to confirm if it is built on Shopify.
+*   **📦 Deep Product Scraping**: Recursively iterates through shop collection pages to scrape variant descriptions, option combinations, exact pricing, weight metrics, SKUs, and tags.
+*   **📚 Collection Filter**: Renders category channels in a dropdown list, allowing users to isolate and download targeted collections.
+*   **🔍 Searchable Grid Preview**: View extracted products in a visual grid, search items dynamically, and choose exactly what to export.
+*   **💾 Flexible Downloads**: Export the entire catalog, designated collections, a custom hand-picked selection of cards, or individual products.
+*   **🔒 100% Secure & Private**: Zero external analytics APIs, zero databases, and completely local execution.
 
 ---
 
-## 🚀 Quick Start Guide
+## 🛠️ Technical Architecture & Permissions
 
-### 1. Load the Chrome Extension
+WitScraper operates strictly on Google Chrome's **Manifest v3 (MV3)** extension guidelines:
 
-Since WitScraper is loaded from source, compile it directly into Chrome in under 60 seconds:
-
-1.  Open **Google Chrome** and navigate to `chrome://extensions/` in your address bar.
-2.  Enable **Developer Mode** by clicking the toggle switch in the top-right corner.
-3.  Click the **Load unpacked** button in the top-left corner.
-4.  Select the **`extension/`** subdirectory of this project (the folder containing `manifest.json`).
-5.  Click the puzzle piece icon on your Chrome toolbar, find **WitScraper**, and click the pushpin icon to keep it visible!
-
-### 2. Run the React Landing Page Locally
-
-Explore the interactive live simulator and tilt mockup animations on your local workstation:
-
-1.  Open your terminal and enter the web app directory:
-    ```bash
-    cd site
-    ```
-2.  Install the required dependencies:
-    ```bash
-    npm install
-    ```
-3.  Launch the Vite hot-reloading development server:
-    ```bash
-    npm run dev
-    ```
-4.  Open the local address printed in the terminal (e.g. `http://localhost:5173`) in Chrome!
-
-### 3. Packaging & Bundling (ZIP Builder)
-
-If you update the extension code (inside the `extension/` folder) and want to bundle it for others to download:
-
-1.  Open your terminal in the repository root directory.
-2.  Execute the automated build utility:
-    ```bash
-    node scripts/build-zip.js
-    ```
-3.  The package engine will verify your source files, check folder mappings, and bundle the optimized extension files directly into `site/public/witscraper-extension.zip` in under a second! It utilizes a platform-independent zipping scheme.
+*   **`manifest.json`**: Declares Manifest v3 standards, mapping out background content scripts, popup interfaces, and permission scopes.
+*   **`activeTab`**: Used to safely run page audit scripts on the user's active tab only when the popup is clicked.
+*   **`scripting`**: Injects lightweight page DOM scanners (`content.js`) to query shop variables in real time.
+*   **`downloads`**: Compiles dynamic CSV Blobs locally inside the popup environment and triggers standard browser downloads securely.
+*   **`host_permissions (<all_urls>)`**: Necessary to execute scraping fetches against custom-domain Shopify stores.
 
 ---
 
-## 📖 How to Use
+## 📂 File Manifest
 
-1.  **Auditing Stores**: Navigate to any e-commerce storefront (e.g., `gymshark.com`, `colourpop.com`). Open the extension from your toolbar.
-    *   *If Shopify*: The dashboard lights up showing theme metadata, verified badges, active first/last catalog dates, and statistical item counters.
-    *   *If Non-Shopify*: Renders a secure warnings box detailing non-compatible environments.
-2.  **Filtering & Searching**: Input key titles in the search bar or pick collections from the dropdown selection to filter the card grid view.
-3.  **Downloading**: Click **Export All Products**, download filtered grids using collection triggers, check specific cards for custom exports, or click individual export tags.
-
----
-
-## 🗃️ Exported CSV Schema
-
-WitScraper generates CSV blocks conforming directly to Shopify Import specifications. The output features these core fields:
-
-| CSV Column Header | Description | Example Output |
-| :--- | :--- | :--- |
-| **Handle** | URL-friendly product slug | `nebula-oversized-hoodie` |
-| **Title** | Scraped item name | `"Nebula Oversized Hoodie"` |
-| **Body (HTML)** | Structured item description | `"<p>Premium high-quality items...</p>"` |
-| **Vendor** | Store brand ownership | `"Aesthetic Clothing Co."` |
-| **Type** | Broad product categorization | `"Apparel > Hoodie"` |
-| **Tags** | Meta descriptors and tags | `summer, cozy, oversized, premium` |
-| **Option1 Name** | Primary variant property | `Size` |
-| **Option1 Value** | Specific variant value | `OS` |
-| **Variant SKU** | Auto-formatted stock SKU | `AP-NEBUL-OS` |
-| **Variant Price** | Selling price value | `59.00` |
-| **Cost per Item** | Auto-calculated profit cost | `23.60` (Based on 40% margin metrics) |
-| **Image Src** | High-resolution photo asset | `https://cdn.shopify.com/...` |
-| **Status** | Publication status | `active` |
+*   **[manifest.json](file:///d:/My%20Project/Chrome%20extension/WitScraper%20–%20Shopify%20Product%20Scraper/extension/manifest.json)**: Extension entry point and metadata.
+*   **[popup.html](file:///d:/My%20Project/Chrome%20extension/WitScraper%20–%20Shopify%20Product%20Scraper/extension/popup.html)**: Translucent, elegant dashboard view.
+*   **[popup.css](file:///d:/My%20Project/Chrome%20extension/WitScraper%20–%20Shopify%20Product%20Scraper/extension/popup.css)**: Layout styling, card grids, verified badges, and animations.
+*   **[popup.js](file:///d:/My%20Project/Chrome%20extension/WitScraper%20–%20Shopify%20Product%20Scraper/extension/popup.js)**: State controllers, product loaders, collection filters, and CSV creation engines.
+*   **[content.js](file:///d:/My%20Project/Chrome%20extension/WitScraper%20–%20Shopify%20Product%20Scraper/extension/content.js)**: Active tab page DOM parsing script.
+*   **`icons/`**: Lightweight, web-optimized asset icons (`16px`, `32px`, `48px`, `128px`).
 
 ---
 
-## 🔒 Security & Privacy
+## 🚀 Standalone Installation
 
-WitScraper is built on **trust, local execution, and privacy**:
-*   No external analytics engines or tracking cookies.
-*   Zero telemetry. All operations run directly inside standard Google API hooks inside your active session.
-*   The raw code is fully auditable inside `extension/content.js` and `extension/popup.js`.
+To load this extension directly into Google Chrome:
+
+1.  Open **Google Chrome** on your computer.
+2.  Navigate to the extensions manager by typing `chrome://extensions/` in your address bar and hitting Enter.
+3.  In the top-right corner, toggle the **Developer mode** switch to **ON**.
+4.  In the top-left, click the **Load unpacked** button.
+5.  Select **this `extension/` folder** (the directory containing `manifest.json`).
+6.  Click the puzzle piece icon on your Chrome toolbar, find **WitScraper**, and click the pushpin icon to keep it pinned!
+
+---
+
+## 🗃️ CSV Export Mapping
+
+The CSV file downloaded by the extension maps directly to Shopify's product CSV layout. It populates standard import columns, including:
+*   `Handle` (URL slug)
+*   `Title`
+*   `Body (HTML)` (Clean, structured product description)
+*   `Vendor` & `Type`
+*   `Tags`
+*   `Option1 Name` (e.g. Size, Color) & `Option1 Value`
+*   `Variant SKU`
+*   `Variant Grams` (Weight metrics)
+*   `Variant Price`
+*   `Variant Inventory Tracker` (Defaults to `shopify`)
+*   `Variant Inventory Qty`
+*   `Image Src` (Direct Shopify image URL link)
+
+---
+
+## 🔒 Privacy & Open Source
+
+WitScraper runs completely **locally inside your browser context**. 
+*   No database tracking.
+*   No cookies or third-party log analytics.
+*   The raw code is fully auditable in this folder. It requests standard API calls to public Shopify endpoints (e.g., `products.json`) to perform extractions cleanly.
 
 ---
 
@@ -115,7 +84,3 @@ WitScraper is built on **trust, local execution, and privacy**:
 
 **Sushant Gautam** is a full-stack engineer and designer dedicated to engineering high-performance, private-first developer utilities. Check out creative systems, web portals, and portfolios at:
 👉 **[Sushant.online](https://www.sushant.online)**
-
----
-
-**Happy Scraping!** 🕵️‍♂️
